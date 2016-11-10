@@ -102,16 +102,13 @@ Gradle本身就带有它自己的Groovy库，因此不需要安装Groovy。任�
 <span class="command"><strong>gradle -v</strong></span>，然后就会输出Gradle版本还有局部环境变量配置信息（Groovy，JVM版本，OS等）。这个现实的Gradle版本和你所下载的Gradle发布版本是一致的。
 </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:jvm_options" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:jvm_options"></a>3.6.&nbsp;JVM选项</h2></div></div></div><p>运行Gradle的JVM选项可以通过环境变量设置。你可以设置<code class="envar">GRADLE_OPTS</code>
 或者<code class="envar">JAVA_OPTS</code>，或者两个都设置。<code class="envar">JAVA_OPTS</code>通常是一个被多个Java应用程序共享的环境变量。一个典型的使用例子就是在<code class="envar">JAVA_OPTS</code>设置HTTP代理以及在<code class="envar">GRADLE_OPTS</code>设置内存选项。这些变量也可以在<span class="command"><strong>gradle</strong></span>或者<span class="command"><strong>gradlew</strong></span>脚本的开始设置。
-</p><p>注意现在还不支持在命令行中设置Gradle的JVM选项。</p></div></div><div class="chapter"><div class="titlepage"><div><div><h1><a name="tutorial_gradle_command_line"></a>Chapter&nbsp;4.&nbsp;Using the Gradle Command-Line</h1></div></div></div><p>This chapter introduces the basics of the Gradle command-line. You run a build using the
-<span class="command"><strong>gradle</strong></span> command, which you have already seen in action in previous chapters.</p><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:executing_multiple_tasks" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:executing_multiple_tasks"></a>4.1.&nbsp;Executing multiple tasks</h2></div></div></div><p>You can execute multiple tasks in a single build by listing each of the tasks on the command-line. For example,
-the command <strong class="userinput"><code>gradle compile test</code></strong> will execute the <code class="literal">compile</code> and
-<code class="literal">test</code> tasks. Gradle will execute the tasks in the order that they are listed on the
-command-line, and will also execute the dependencies for each task. Each task is executed once only,
-regardless of how it came to be included in the build: whether it was specified on the command-line, or as a
-dependency of another task, or both. Let's look at an example.</p><p>
-Below four tasks are defined. Both <code class="literal">dist</code> and <code class="literal">test</code> depend on the
-<code class="literal">compile</code> task. Running <strong class="userinput"><code>gradle dist test</code></strong> for this build script
-results in the <code class="literal">compile</code> task being executed only once.</p><div class="figure"><a name="N10172"></a><p class="title"><b>Figure&nbsp;4.1.&nbsp;Task dependencies</b></p><div class="figure-contents"><img src="./Gradle User Guide Version 3.1 (Single Page)_files/commandLineTutorialTasks.png" alt="Task dependencies"></div></div><br class="figure-break"><div class="example"><a name="multipleTasksFromCommandLine"></a><p class="title"><b>Example&nbsp;4.1.&nbsp;Executing multiple tasks</b></p><div class="example-contents"><p><code class="filename">build.gradle</code></p><pre class="programlisting">task compile &lt;&lt; {
+</p><p>注意现在还不支持在命令行中设置Gradle的JVM选项。</p></div></div><div class="chapter"><div class="titlepage"><div><div><h1><a name="tutorial_gradle_command_line"></a>第&nbsp;4章.&nbsp;使用Gradle命令行</h1></div></div></div><p>这一章介绍Gradle命令行的基础知识，你可以使用你之前章节已经看到的
+<span class="command"><strong>gradle</strong></span> 命令。</p><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:executing_multiple_tasks" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:executing_multiple_tasks"></a>4.1.&nbsp;多任务调度</h2></div></div></div><p>你可以在一个构建中以列表命令行的形式调用多任务，举个例子，
+命令<strong class="userinput"><code>gradle compile test</code></strong> 将会执行<code class="literal">编译</code> 和
+<code class="literal">测试</code> 任务. Gradle将会以它们在命令行中的顺序依次执行它们，当然包括各个任务的依赖项。每一个任务仅执行依次，无论它们是怎样的方式包含在构建中：是否在命令行中指定，或者作为其它任务的依赖项，或者是两者。让我们来看一个例子</p><p>
+以下的四个任务已经被定义了。 <code class="literal">dist</code> 和 <code class="literal">test</code> 依赖于
+<code class="literal">compile</code> 任务。 在这个构建中运行 <strong class="userinput"><code>gradle dist test</code></strong>
+的结果也只是 <code class="literal">compile</code> 任务被执行一次。</p><div class="figure"><a name="N10172"></a><p class="title"><b>图&nbsp;4.1.&nbsp;任务依赖</b></p><div class="figure-contents"><img src="./Gradle User Guide Version 3.1 (Single Page)_files/commandLineTutorialTasks.png" alt="Task dependencies"></div></div><br class="figure-break"><div class="example"><a name="multipleTasksFromCommandLine"></a><p class="title"><b>例子&nbsp;4.1.&nbsp;调度多任务</b></p><div class="example-contents"><p><code class="filename">build.gradle</code></p><pre class="programlisting">task compile &lt;&lt; {
     println <span class="hl-string">'compiling source'</span>
 }
 
@@ -126,7 +123,7 @@ task test(dependsOn: [compile, compileTest]) &lt;&lt; {
 task dist(dependsOn: [compile, test]) &lt;&lt; {
     println <span class="hl-string">'building the distribution'</span>
 }
-</pre><p>Output of <strong class="userinput"><code>gradle dist test</code></strong></p><pre class="screen">&gt; gradle dist test
+</pre><p><strong class="userinput"><code>gradle dist test</code></strong>的输出</p><pre class="screen">&gt; gradle dist test
 :compile
 compiling source
 :compileTest
@@ -140,9 +137,7 @@ BUILD SUCCESSFUL
 
 Total time: 1 secs
 </pre></div></div><br class="example-break"><p>
-Each task is executed only once, so <strong class="userinput"><code>gradle test test</code></strong> is exactly the same
-as <strong class="userinput"><code>gradle test</code></strong>.</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:excluding_tasks_from_the_command_line" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:excluding_tasks_from_the_command_line"></a>4.2.&nbsp;Excluding tasks</h2></div></div></div><p>You can exclude a task from being executed using the <code class="option">-x</code> command-line option and providing
-the name of the task to exclude. Let's try this with the sample build file above.</p><div class="example"><a name="excludeTask"></a><p class="title"><b>Example&nbsp;4.2.&nbsp;Excluding tasks</b></p><div class="example-contents"><p>Output of <strong class="userinput"><code>gradle dist -x test</code></strong></p><pre class="screen">&gt; gradle dist -x test
+每一个任务都只被执行一次，所以 <strong class="userinput"><code>gradle test test</code></strong>和<strong class="userinput"><code>gradle test</code></strong>是完全等价的。</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:excluding_tasks_from_the_command_line" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:excluding_tasks_from_the_command_line"></a>4.2.&nbsp;执行任务</h2></div></div></div><p>你可以用<code class="option">-x</code>的命令行选项后接人物名字讲一个任务排除在执行序列中。让我们用上面一样的例子来分析看看。</p><div class="example"><a name="excludeTask"></a><p class="title"><b>例子&nbsp;4.2.&nbsp;执行任务</b></p><div class="example-contents"><p><strong class="userinput"><code>gradle dist -x test</code></strong>的输出</p><pre class="screen">&gt; gradle dist -x test
 :compile
 compiling source
 :dist
@@ -151,11 +146,10 @@ building the distribution
 BUILD SUCCESSFUL
 
 Total time: 1 secs
-</pre></div></div><br class="example-break"><p>You can see from the output of this example, that the <code class="literal">test</code> task is not executed, even
-though it is a dependency of the <code class="literal">dist</code> task. You will also notice that the
-<code class="literal">test</code> task's dependencies, such as <code class="literal">compileTest</code>
-are not executed either. Those dependencies of <code class="literal">test</code> that are required by another task, such as
-<code class="literal">compile</code>, are still executed.</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:continue_build_on_failure" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:continue_build_on_failure"></a>4.3.&nbsp;Continuing the build when a failure occurs</h2></div></div></div><p>By default, Gradle will abort execution and fail the build as soon as any task fails. This allows the build to complete sooner, but hides other failures
+</pre></div></div><br class="example-break"><p>你可以从这个例子的输出看到<code class="literal">test</code>任务并没有执行，尽管它是<code class="literal">dist</code>任务的依赖项。 你能够知道
+<code class="literal">test</code>任务的所有依赖，比如<code class="literal">compileTest</code>
+也没有执行。 这些<code class="literal">test</code>的依赖被另一个任务所需要，比如
+<code class="literal">compile</code>,还是被执行了。</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:continue_build_on_failure" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:continue_build_on_failure"></a>4.3.&nbsp;Continuing the build when a failure occurs</h2></div></div></div><p>By default, Gradle will abort execution and fail the build as soon as any task fails. This allows the build to complete sooner, but hides other failures
 that would have occurred. In order to discover as many failures as possible in a single build execution, you can use the <code class="literal">--continue</code> option.
 </p><p>When executed with <code class="literal">--continue</code>, Gradle will execute <span class="emphasis"><em>every</em></span> task to be executed where all of the dependencies for that task completed without failure,
 instead of stopping as soon as the first failure is encountered. Each of the encountered failures will be reported at the end of the build.
