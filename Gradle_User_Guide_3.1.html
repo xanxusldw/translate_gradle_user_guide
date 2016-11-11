@@ -149,15 +149,11 @@ Total time: 1 secs
 </pre></div></div><br class="example-break"><p>你可以从这个例子的输出看到<code class="literal">test</code>任务并没有执行，尽管它是<code class="literal">dist</code>任务的依赖项。 你能够知道
 <code class="literal">test</code>任务的所有依赖，比如<code class="literal">compileTest</code>
 也没有执行。 这些<code class="literal">test</code>的依赖被另一个任务所需要，比如
-<code class="literal">compile</code>,还是被执行了。</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:continue_build_on_failure" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:continue_build_on_failure"></a>4.3.&nbsp;Continuing the build when a failure occurs</h2></div></div></div><p>By default, Gradle will abort execution and fail the build as soon as any task fails. This allows the build to complete sooner, but hides other failures
-that would have occurred. In order to discover as many failures as possible in a single build execution, you can use the <code class="literal">--continue</code> option.
-</p><p>When executed with <code class="literal">--continue</code>, Gradle will execute <span class="emphasis"><em>every</em></span> task to be executed where all of the dependencies for that task completed without failure,
-instead of stopping as soon as the first failure is encountered. Each of the encountered failures will be reported at the end of the build.
-</p><p>If a task fails, any subsequent tasks that were depending on it will not be executed, as it is not safe to do so. For example, tests will not
-run if there is a compilation failure in the code under test; because the test task will depend on the compilation task (either directly or indirectly).
-</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:task_name_abbreviation" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:task_name_abbreviation"></a>4.4.&nbsp;Task name abbreviation</h2></div></div></div><p>When you specify tasks on the command-line, you don't have to provide the full name of the task. You only need to provide enough of the
-task name to uniquely identify the task. For example, in the sample build above, you can execute task
-<code class="literal">dist</code> by running <strong class="userinput"><code>gradle d</code></strong>:</p><div class="example"><a name="abbreviateTaskName"></a><p class="title"><b>Example&nbsp;4.3.&nbsp;Abbreviated task name</b></p><div class="example-contents"><p>Output of <strong class="userinput"><code>gradle di</code></strong></p><pre class="screen">&gt; gradle di
+<code class="literal">compile</code>,还是被执行了。</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:continue_build_on_failure" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:continue_build_on_failure"></a>4.3.&nbsp;错误发生时继续构建</h2></div></div></div><p>一般情况下，Gradle在遇到有某个任务失败了是将会停止构建。这将使构建马上结束，但是后面的错误将会继续发生。为了在一次构建中发现尽可能多的错误，你可以使用 <code class="literal">--continue</code> 选项。
+</p><p>当执行<code class="literal">--continue</code>，Gradle将会调用<span class="emphasis"><em>每一个</em></span>所有依赖项都没有出现错误的任务执行，
+而不是遇到第一个错误就马上停止构建。 每一个错误最后都会报告给你。
+</p><p>如果一个任务失败，任意的后续依赖于这个它的任务都不会被调用，因为这样做不安全。比如说，在test这个例子中如果compilation失败tests将不会运行；因为test任务依赖于compilation任务(直接的或者间接的)
+</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:task_name_abbreviation" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:task_name_abbreviation"></a>4.4.&nbsp;任务名缩写</h2></div></div></div><p>当你在命令行中指定任务时，你没有必要提供任务的全名。你只要提供能够唯一标识这个任务的足够的任务名就行了。比如，在和上面的例子中，你可以通过运行<strong class="userinput"><code>gradle d</code></strong>来调用任务<code class="literal">dist</code>:</p><div class="example"><a name="abbreviateTaskName"></a><p class="title"><b>例子&nbsp;4.3.&nbsp;缩写的任务名</b></p><div class="example-contents"><p><strong class="userinput"><code>gradle di</code></strong>的输出</p><pre class="screen">&gt; gradle di
 :compile
 compiling source
 :compileTest
@@ -170,8 +166,7 @@ building the distribution
 BUILD SUCCESSFUL
 
 Total time: 1 secs
-</pre></div></div><br class="example-break"><p>You can also abbreviate each word in a camel case task name. For example, you can execute task <code class="literal">compileTest</code>
-by running <strong class="userinput"><code>gradle compTest</code></strong> or even <strong class="userinput"><code>gradle cT</code></strong></p><div class="example"><a name="abbreviateCamelCaseTaskName"></a><p class="title"><b>Example&nbsp;4.4.&nbsp;Abbreviated camel case task name</b></p><div class="example-contents"><p>Output of <strong class="userinput"><code>gradle cT</code></strong></p><pre class="screen">&gt; gradle cT
+</pre></div></div><br class="example-break"><p>你也可以用驼峰命名法来简写每个单词，举个例子，你可以通过<strong class="userinput"><code>gradle compTest</code></strong>甚至<strong class="userinput"><code>gradle cT</code></strong>来运行<code class="literal">compileTest</code>任务。</p><div class="example"><a name="abbreviateCamelCaseTaskName"></a><p class="title"><b>例子&nbsp;4.4.&nbsp;驼峰命名法简写任务名</b></p><div class="example-contents"><p><strong class="userinput"><code>gradle cT</code></strong>的输出</p><pre class="screen">&gt; gradle cT
 :compile
 compiling source
 :compileTest
@@ -180,39 +175,32 @@ compiling unit tests
 BUILD SUCCESSFUL
 
 Total time: 1 secs
-</pre></div></div><br class="example-break"><p>You can also use these abbreviations with the <code class="option">-x</code> command-line option.</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:selecting_build" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:selecting_build"></a>4.5.&nbsp;Selecting which build to execute</h2></div></div></div><p>When you run the <span class="command"><strong>gradle</strong></span> command, it looks for a build file in the current directory.
-You can use the <code class="option">-b</code> option to select another build file.
-If you use <code class="option">-b</code> option then <code class="filename">settings.gradle</code> file is not used. Example:
-</p><div class="example"><a name="selectProjectUsingBuildFile"></a><p class="title"><b>Example&nbsp;4.5.&nbsp;Selecting the project using a build file</b></p><div class="example-contents"><p><code class="filename">subdir/myproject.gradle</code></p><pre class="programlisting">task hello &lt;&lt; {
+</pre></div></div><br class="example-break"><p>你还可以通过<code class="option">-x</code>命令行使用这些缩写方式。</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:selecting_build" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:selecting_build"></a>4.5.&nbsp;选择要调用的构建</h2></div></div></div><p>当你运行<span class="command"><strong>gradle</strong></span> 命令行的时候, 看起来就像在当前文件夹下构建一个文件。
+你可以用<code class="option">-b</code>选项来选择另外的一个构建文件。如果
+如果你使用<code class="option">-b</code>选项那么<code class="filename">settings.gradle</code>文件将无效。 例子如下:
+</p><div class="example"><a name="selectProjectUsingBuildFile"></a><p class="title"><b>例子&nbsp;4.5.&nbsp;选择工程中的构建文件</b></p><div class="example-contents"><p><code class="filename">subdir/myproject.gradle</code></p><pre class="programlisting">task hello &lt;&lt; {
     println <span class="hl-string">"using build file '$buildFile.name' in '$buildFile.parentFile.name'."</span>
 }
-</pre><p>Output of <strong class="userinput"><code>gradle -q -b subdir/myproject.gradle hello</code></strong></p><pre class="screen">&gt; gradle -q -b subdir/myproject.gradle hello
-using build file 'myproject.gradle' in 'subdir'.</pre></div></div><br class="example-break"><p>Alternatively, you can use the <code class="option">-p</code> option to specify the project directory to use.
-For multi-project builds you should use <code class="option">-p</code> option instead of <code class="option">-b</code> option.
-</p><div class="example"><a name="selectProjectUsingProjectDir"></a><p class="title"><b>Example&nbsp;4.6.&nbsp;Selecting the project using project directory</b></p><div class="example-contents"><p>Output of <strong class="userinput"><code>gradle -q -p subdir hello</code></strong></p><pre class="screen">&gt; gradle -q -p subdir hello
-using build file 'build.gradle' in 'subdir'.</pre></div></div><br class="example-break"></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:rerun_tasks" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:rerun_tasks"></a>4.6.&nbsp;Forcing tasks to execute</h2></div></div></div><p>
-Many tasks, particularly those provided by Gradle itself, support <a class="link" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:up_to_date_checks">incremental builds</a>.
-Such tasks can determine whether they need to run or not based on whether their inputs or outputs have changed since the last
-time they ran. You can easily identify tasks that take part in incremental build when Gradle displays
-the text <code class="literal">UP-TO-DATE</code> next to their name during a build run.
+</pre><p><strong class="userinput"><code>gradle -q -b subdir/myproject.gradle hello</code></strong>的输出</p><pre class="screen">&gt; gradle -q -b subdir/myproject.gradle hello
+using build file 'myproject.gradle' in 'subdir'.</pre></div></div><br class="example-break"><p>另外，你还可以用<code class="option">-p</code>选项来指定被使用的工程文件目录。
+对于多任务构建你讲<code class="option">-p</code>选项放在<code class="option">-b</code>选项的前面。
+</p><div class="example"><a name="selectProjectUsingProjectDir"></a><p class="title"><b>例子&nbsp;4.6.&nbsp;选择工程的目录</b></p><div class="example-contents"><p><strong class="userinput"><code>gradle -q -p subdir hello</code></strong>的输出</p><pre class="screen">&gt; gradle -q -p subdir hello
+using build file 'build.gradle' in 'subdir'.</pre></div></div><br class="example-break"></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:rerun_tasks" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:rerun_tasks"></a>4.6.&nbsp;强制调用任务</h2></div></div></div><p>
+许多任务特别是Gradle所提供的都支持<a class="link" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:up_to_date_checks">增量构建</a>.
+这些任务能够判断出它们是否需要运行与否,取决于它们的输入或者输出在最近一次运行时间内改变了吗。在构建时你可以非常简单地辨别出任务是否参与了增量构建，那就是当它们的任务名后面有<code class="literal">UP-TO-DATE</code>这样的标识。
 </p><p>
-You may on occasion want to force Gradle to run all the tasks, ignoring any up-to-date checks. If that's the case, simply use
-the <code class="literal">--rerun-tasks</code> option. Here's the output when running a task both without and with <code class="literal">--rerun-tasks</code>:
-</p><div class="example"><a name="rerunTasks"></a><p class="title"><b>Example&nbsp;4.7.&nbsp;Forcing tasks to run</b></p><div class="example-contents"><p>Output of <strong class="userinput"><code>gradle doIt</code></strong></p><pre class="screen">&gt; gradle doIt
+你可能有的时候想强制Gradle运行所有的任务，不去检查up-to-date标识。如果是这样的话，你可以用<code class="literal">--rerun-tasks</code>选项。 下面就行用和不用<code class="literal">--rerun-tasks</code>的输出:
+</p><div class="example"><a name="rerunTasks"></a><p class="title"><b>例子&nbsp;4.7.&nbsp;强制任务执行</b></p><div class="example-contents"><p><strong class="userinput"><code>gradle doIt</code></strong>的输出</p><pre class="screen">&gt; gradle doIt
 :doIt UP-TO-DATE
-</pre><p>Output of <strong class="userinput"><code>gradle --rerun-tasks doIt</code></strong></p><pre class="screen">&gt; gradle --rerun-tasks doIt
+</pre><p><strong class="userinput"><code>gradle --rerun-tasks doIt</code></strong>的输出</p><pre class="screen">&gt; gradle --rerun-tasks doIt
 :doIt
 </pre></div></div><br class="example-break"><p>
-Note that this will force <span class="emphasis"><em>all</em></span> required tasks to execute, not just the ones you specify on the command
-line. It's a little like running a <code class="literal">clean</code>, but without the build's generated output being deleted.
-</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:obtaining_information_about_your_build" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:obtaining_information_about_your_build"></a>4.7.&nbsp;Obtaining information about your build</h2></div></div></div><p>Gradle provides several built-in tasks which show particular details of your build. This can be
-useful for understanding the structure and dependencies of your build, and for debugging problems.
-</p><p>In addition to the built-in tasks shown below, you can also use the
-<a class="link" href="https://docs.gradle.org/current/userguide/userguide_single.html#project_reports_plugin">project report plugin</a> to add tasks to your project which will
-generate these reports.
-</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="sec:listing_projects" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:listing_projects"></a>4.7.1.&nbsp;Listing projects</h3></div></div></div><p>Running <strong class="userinput"><code>gradle projects</code></strong> gives you a list of the sub-projects of the selected project,
-displayed in a hierarchy. Here is an example:
-</p><div class="example"><a name="projectListReport"></a><p class="title"><b>Example&nbsp;4.8.&nbsp;Obtaining information about projects</b></p><div class="example-contents"><p>Output of <strong class="userinput"><code>gradle -q projects</code></strong></p><pre class="screen">&gt; gradle -q projects
+注意这样做的话将会强制<span class="emphasis"><em>所有</em></span>任务都执行，而不仅仅是在命令行上指定的任务。这个有点像<code class="literal">clean</code>操作，但是却不会删除构建生成的产物。
+</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:obtaining_information_about_your_build" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:obtaining_information_about_your_build"></a>4.7.&nbsp;获取构建信息</h2></div></div></div><p>Gradle会提供一些内部构建的具体信息。这能够让你更了解你的构建的结构和依赖项，以及排查问题。
+</p><p>通过这些内部构建信息，你还能够用
+<a class="link" href="https://docs.gradle.org/current/userguide/userguide_single.html#project_reports_plugin">项目报告插件</a>添加任务到你的工程并且产生回馈的消息。
+</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="sec:listing_projects" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:listing_projects"></a>4.7.1.&nbsp;列举项目</h3></div></div></div><p>运行 <strong class="userinput"><code>gradle projects</code></strong>能够给你一个所选项目的子项目列表，并且以层级方式显示。下面就是一个例子：
+</p><div class="example"><a name="projectListReport"></a><p class="title"><b>例子&nbsp;4.8.&nbsp;获取项目相关的信息</b></p><div class="example-contents"><p><strong class="userinput"><code>gradle -q projects</code></strong>的输出</p><pre class="screen">&gt; gradle -q projects
 
 ------------------------------------------------------------
 Root project
@@ -224,13 +212,10 @@ Root project 'projectReports'
 
 To see a list of the tasks of a project, run gradle &lt;project-path&gt;:tasks
 For example, try running gradle :api:tasks
-</pre></div></div><br class="example-break"><p>The report shows the description of each project, if specified. You can provide a description for a project
-by setting the <code class="literal">description</code> property:
-</p><div class="example"><a name="projectListReport"></a><p class="title"><b>Example&nbsp;4.9.&nbsp;Providing a description for a project</b></p><div class="example-contents"><p><code class="filename">build.gradle</code></p><pre class="programlisting">description = <span class="hl-string">'The shared API for the application'</span>
-</pre></div></div><br class="example-break"></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="sec:listing_tasks" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:listing_tasks"></a>4.7.2.&nbsp;Listing tasks</h3></div></div></div><p>Running <strong class="userinput"><code>gradle tasks</code></strong> gives you a list of the main tasks of the
-selected project. This report shows the default tasks for the project, if any, and a description for
-each task. Below is an example of this report:
-</p><div class="example"><a name="taskListReport"></a><p class="title"><b>Example&nbsp;4.10.&nbsp;Obtaining information about tasks</b></p><div class="example-contents"><p>Output of <strong class="userinput"><code>gradle -q tasks</code></strong></p><pre class="screen">&gt; gradle -q tasks
+</pre></div></div><br class="example-break"><p>这个报告就展示了每个项目的具体描述，当然前提是这些项目的描述已经有写入。你可以通过设置<code class="literal">描述</code>属性为项目提供描述:
+</p><div class="example"><a name="projectListReport"></a><p class="title"><b>例子&nbsp;4.9.&nbsp;为项目提供描述</b></p><div class="example-contents"><p><code class="filename">build.gradle</code></p><pre class="programlisting">description = <span class="hl-string">'The shared API for the application'</span>
+</pre></div></div><br class="example-break"></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="sec:listing_tasks" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:listing_tasks"></a>4.7.2.&nbsp;列出任务</h3></div></div></div><p>运行<strong class="userinput"><code>gradle tasks</code></strong>将会给你展示所选项目的主要任务所有构成的列表。这个报告展示了项目的默认项目，包括任务的描述。下面就是这个报告的例子:
+</p><div class="example"><a name="taskListReport"></a><p class="title"><b>例子&nbsp;4.10.&nbsp;获取任务相关信息</b></p><div class="example-contents"><p><strong class="userinput"><code>gradle -q tasks</code></strong>的输出</p><pre class="screen">&gt; gradle -q tasks
 
 ------------------------------------------------------------
 All tasks runnable from root project
@@ -264,17 +249,13 @@ tasks - Displays the tasks runnable from root project 'projectReports' (some of 
 To see all tasks and more detail, run gradle tasks --all
 
 To see more detail about a task, run gradle help --task &lt;task&gt;
-</pre></div></div><br class="example-break"><p>By default, this report shows only those tasks which have been assigned to a task group. You can do this
-by setting the <code class="literal">group</code> property for the task. You can also set the <code class="literal">description</code>
-property, to provide a description to be included in the report.
-</p><div class="example"><a name="taskListReport"></a><p class="title"><b>Example&nbsp;4.11.&nbsp;Changing the content of the task report</b></p><div class="example-contents"><p><code class="filename">build.gradle</code></p><pre class="programlisting">dists {
+</pre></div></div><br class="example-break"><p>默认情况下，这个报告仅仅展示了那些被指定到任务群的任务。你可以为任务设置<code class="literal">群</code>属性。你也可以设置<code class="literal">描述</code>属性，这样就可以在报告中看到了。
+</p><div class="example"><a name="taskListReport"></a><p class="title"><b>例子&nbsp;4.11.&nbsp;改变任务报告的内容</b></p><div class="example-contents"><p><code class="filename">build.gradle</code></p><pre class="programlisting">dists {
     description = <span class="hl-string">'Builds the distribution'</span>
     group = <span class="hl-string">'build'</span>
 }
-</pre></div></div><br class="example-break"><p>You can obtain more information in the task listing using the <code class="option">--all</code> option. With
-this option, the task report lists all tasks in the project, grouped by main task, and the dependencies
-for each task. Here is an example:
-</p><div class="example"><a name="taskListAllReport"></a><p class="title"><b>Example&nbsp;4.12.&nbsp;Obtaining more information about tasks</b></p><div class="example-contents"><p>Output of <strong class="userinput"><code>gradle -q tasks --all</code></strong></p><pre class="screen">&gt; gradle -q tasks --all
+</pre></div></div><br class="example-break"><p>你可以使用<code class="option">--all</code>选项获取更多的任务信息。 通过这个选项，任务报告会列出项目中的所有任务，包括每个任务的依赖项。下面就是一个例子：
+</p><div class="example"><a name="taskListAllReport"></a><p class="title"><b>例子&nbsp;4.12.&nbsp;获取任务更多的信息</b></p><div class="example-contents"><p><strong class="userinput"><code>gradle -q tasks --all</code></strong>的输出</p><pre class="screen">&gt; gradle -q tasks --all
 
 ------------------------------------------------------------
 All tasks runnable from root project
