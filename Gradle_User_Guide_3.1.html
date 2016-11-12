@@ -399,104 +399,80 @@ buildFile: /home/user/gradle/samples/userguide/tutorial/projectReports/api/build
 </p><p>构建会利用buildSrc目录产生第二份描述报告并放在
 <code class="filename">buildSrc/build</code>目录中。
 </p><table cellpadding="0" cellspacing="0" summary="manufactured viewport for HTML img" border="0" width="903"><tbody><tr height="477"><td><img src="./Gradle User Guide Version 3.1 (Single Page)_files/profile.png" height="477"></td></tr></tbody></table></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:dry_run" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:dry_run"></a>4.8.&nbsp;跳过执行任务(Dry Run)</h2></div></div></div><p>有的时候你可能会对在命令行中顺序执行特定任务集感兴趣，但是你可能不想一些任务被执行。你可以使用<code class="option">-m</code>选项来达到这个目的。举个例子，如果你执行“<strong class="userinput"><code>gradle -m clean compile</code></strong>”这个命令，你将会看到所有的任务都被执行了除了<code class="literal">clean</code>和<code class="literal">compile</code>这两个任务。这是对<code class="option">tasks</code>任务的补充，让你知道可以执行的任务。
-</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:cli_tutorial_summary" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:cli_tutorial_summary"></a>4.9.&nbsp;总结</h2></div></div></div><p>在这个章节，你可以一些你能够用命令行处理的事情。你还可以在<a class="xref" href="https://docs.gradle.org/current/userguide/userguide_single.html#gradle_command_line">Appendix&nbsp;D, <i>Gradle Command Line</i></a>中找到更多关于<span class="command"><strong>gradle</strong></span>的命令。</p></div></div><div class="chapter"><div class="titlepage"><div><div><h1><a name="gradle_wrapper"></a>Chapter&nbsp;5.&nbsp;Gradle包装器(The Gradle Wrapper)</h1></div></div></div><p>Most tools require installation on your computer before you can use them. If the installation is easy, you
-may think that’s fine. But it can be an unnecessary burden on the users of the build. Equally importantly,
-will the user install the right version of the tool for the build? What if they’re building an old version
-of the software?</p><p>The Gradle Wrapper (henceforth referred to as the “Wrapper”) solves both these problems and is the preferred
-way of starting a Gradle build.</p><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="using_wrapper_scripts" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#using_wrapper_scripts"></a>5.1.&nbsp;Executing a build with the Wrapper</h2></div></div></div><p>If a Gradle project has set up the Wrapper (and we recommend all projects do so), you can execute
-the build using one of the following commands from the root of the project:
-</p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p><strong class="userinput"><code>./gradlew &lt;task&gt;</code></strong> (on Unix-like platforms such as Linux
-and Mac OS X)</p></li><li class="listitem"><p><strong class="userinput"><code>gradlew &lt;task&gt;</code></strong> (on Windows using the gradlew.bat
-batch file)</p></li></ul></div><p>
-Each Wrapper is tied to a specific version of Gradle, so when you first run one of the commands above
-for a given Gradle version, it will download the corresponding Gradle distribution and use it to execute
-the build.
-</p><div class="tip"><h3 class="title">IDEs</h3><p>When importing a Gradle project via its wrapper, your IDE may ask to use the Gradle 'all'
-distribution. This is perfectly fine and helps the IDE provide code completion for the build files.
-</p></div><p>Not only does this mean that you don’t have to manually install Gradle yourself, but you are also sure
-to use the version of Gradle that the build is designed for. This makes your historical builds more
-reliable. Just use the appropriate syntax from above whenever you see a command line starting with
-<strong class="userinput"><code>gradle ...</code></strong> in the user guide, on Stack Overflow, in articles or wherever.
-</p><p>For completeness sake, and to ensure you don’t delete any important files, here are the files and
-directories in a Gradle project that make up the Wrapper:
-</p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p><code class="filename">gradlew</code> (Unix Shell script)</p></li><li class="listitem"><p><code class="filename">gradlew.bat</code> (Windows batch file)</p></li><li class="listitem"><p><code class="filename">gradle/wrapper/gradle-wrapper.jar</code> (Wrapper JAR)</p></li><li class="listitem"><p><code class="filename">gradle/wrapper/gradle-wrapper.properties</code> (Wrapper properties)</p></li></ul></div><p>
-</p><p>If you’re wondering where the Gradle distributions are stored, you’ll find them in your user home
-directory under <code class="filename">$USER_HOME/.gradle/wrapper/dists</code>.
-</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:wrapper_generation" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:wrapper_generation"></a>5.2.&nbsp;Adding the Wrapper to a project</h2></div></div></div><p>
-The Wrapper is something you <span class="emphasis"><em>should</em></span> check into version control. By distributing the Wrapper with your project,
-anyone can work with it without needing to install Gradle beforehand. Even better, users of the build are guaranteed to use the
-version of Gradle that the build was designed to work with. Of course, this is also great for
-<a class="ulink" href="http://en.wikipedia.org/wiki/Continuous_integration" target="_top">continuous integration</a> servers (i.e. servers that regularly
-build your project) as it requires no configuration on the server.
-</p><p>
-You install the Wrapper into your project by running the <code class="literal">wrapper</code> task. (This task is always available, even if
-you don't add it to your build).
-To specify a Gradle version use <code class="literal">--gradle-version</code> on the command-line. By default, the Wrapper will use a <code class="literal">bin</code> distribution.
-This is the smallest Gradle distribution. Some tools, like Android Studio and Intellij IDEA, provide additional context information when used with the <code class="literal">all</code> distribution.
-You may select a different Gradle distribution type by using <code class="literal">--distribution-type</code>.
-You can also set the URL to download Gradle from directly via <code class="literal">--gradle-distribution-url</code>. If no version or distribution
-URL is specified, the Wrapper will be configured to use the gradle version the <code class="literal">wrapper</code> task is executed with.
-So if you run the <code class="literal">wrapper</code> task with Gradle 2.4, then the Wrapper configuration will default to version 2.4.
-</p><div class="example"><a name="wrapperCommandLine"></a><p class="title"><b>Example&nbsp;5.1.&nbsp;Running the Wrapper task</b></p><div class="example-contents"><p>Output of <strong class="userinput"><code>gradle wrapper --gradle-version 2.0</code></strong></p><pre class="screen">&gt; gradle wrapper --gradle-version 2.0
+</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:cli_tutorial_summary" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:cli_tutorial_summary"></a>4.9.&nbsp;总结</h2></div></div></div><p>在这个章节，你可以看到一些你能够用命令行处理的事情。你还可以在<a class="xref" href="https://docs.gradle.org/current/userguide/userguide_single.html#gradle_command_line">Appendix&nbsp;D, <i>Gradle Command Line</i></a>中找到更多关于<span class="command"><strong>gradle</strong></span>的命令。</p></div></div><div class="chapter"><div class="titlepage"><div><div><h1><a name="gradle_wrapper"></a>Chapter&nbsp;5.&nbsp;Gradle包装器(The Gradle Wrapper)</h1></div></div></div><p>大多数的工具都需要在你使用前安装它们。如果安装是轻松方便的，你可以认为这种做法是好的。但是这对于构建的用户来说确是一个不必要的负担，同样非常重要的一点就是用户是否能够安装正确的构建所需的工具版本？假如他们安装了老的软件版本会怎么样的？</p><p>Gradle包装器(后面直接用“包装器”称呼)解决了这个问题并且也是你开始Gradle构建优先选择的方式。</p><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="using_wrapper_scripts" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#using_wrapper_scripts"></a>5.1.&nbsp;用包装器来执行构建</h2></div></div></div><p>如果一个Gradle工程已经创建好了包装器（我们推荐所有项目都这么做），你就可以在项目的根中执行下面的相应命令执行构建：
+</p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p><strong class="userinput"><code>./gradlew &lt;task&gt;</code></strong> (在类Unix平台上如Linux和Mac OS X)</p></li><li class="listitem"><p><strong class="userinput"><code>gradlew &lt;task&gt;</code></strong> (在Window平台上用gradlew.bat批处理文件)</p></li></ul></div><p>
+每一个包装器都是绑定到一个特定的Gradle版本，所以当你第一次在给定的Gradle版本中执行上面的命令时，就可以下载相应的Gradle分发版本并用它来执行你的构建。
+</p><div class="tip"><h3 class="title">IDEs</h3><p>当通过包装器导入Gradle工程时，你的IDE会询问使用Gradle 'all'分发版，这是很好的做法能够帮助IDE提供构建文件的代码补全功能。
+</p></div><p>这不仅意味着你可以不用手动安装Gradle，而且你还可以保证使用构建所需的Gradle版本。这会使你的历史构建更加可靠。只要使用正确的以
+<strong class="userinput"><code>gradle ...</code></strong>开头的命令行语法，无论你是在用户手册，Stack Overflow,亦或是文章或者别的地方所看到的都行。
+</p><p>为了完整起见，确保你不删除重要的文件，我们将在Gradle项目中构成包装器的文件和目录列出来：
+</p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p><code class="filename">gradlew</code> (Unix Shell脚本)</p></li><li class="listitem"><p><code class="filename">gradlew.bat</code> (Window批处理文件)</p></li><li class="listitem"><p><code class="filename">gradle/wrapper/gradle-wrapper.jar</code> (包装器Jar包)</p></li><li class="listitem"><p><code class="filename">gradle/wrapper/gradle-wrapper.properties</code> (包装器属性)</p></li></ul></div><p>
+</p><p>如果你想知道Gradle分发版本存储的位置， 你可以在你的home用户目录<code class="filename">$USER_HOME/.gradle/wrapper/dists</code>下找到他们。
+</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:wrapper_generation" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:wrapper_generation"></a>5.2.&nbsp;添加包装器到项目中</h2></div></div></div><p>
+包装器是你<span class="emphasis"><em>应该</em></span>考虑放到版本控制中的东西，通过将包装器包含到项目中，其它人就可以不用提前安装Gradle来进行工作，甚至更好的是，构建的用户可以确保使用构建所期望的Gradle版本工作。当然，这对于
+<a class="ulink" href="http://en.wikipedia.org/wiki/Continuous_integration" target="_top">持续集成（continuous integration）</a> 服务器（比如构建你项目的服务器）也是有好处的，这样你就不用在服务器进行这些配置了。
+</p><p>你是通过运行<code class="literal">wrapper</code> 任务安装包装器到你的工程中。（这个任务总是可用的，即使你没有将它添加到你的构建中）。
+在命令行中用<code class="literal">--gradle-version</code>指定Gradle版本。默认情况下，包装器会使用<code class="literal">bin</code>发布版。
+这是最小的Gradle发布版，一些用具，如Android Studio和Intellij IDEA，使用了可以提供了上下文信息<code class="literal">all</code>发布版。
+你可以用<code class="literal">--distribution-type</code>来选择不用的Gradle发布版类型。
+你还可以直接通过<code class="literal">--gradle-distribution-url</code>来设置下载Gradle的URL。如果没有指定任何版本或者发布版URL，包装器将会被配置成使用<code class="literal">wrapper</code>任务执行所匹配的gradle版本。
+也就是如果你用Gradle 2.4运行<code class="literal">wrapper</code>任务，那么你的包装器将会被配置成默认的版本2.4。
+</p><div class="example"><a name="wrapperCommandLine"></a><p class="title"><b>例子&nbsp;5.1.&nbsp;运行Wrapper任务</b></p><div class="example-contents"><p><strong class="userinput"><code>gradle wrapper --gradle-version 2.0</code></strong>的输出</p><pre class="screen">&gt; gradle wrapper --gradle-version 2.0
 :wrapper
 
 BUILD SUCCESSFUL
 
 Total time: 1 secs
 </pre></div></div><br class="example-break"><p>
-The Wrapper can be further customized by adding and configuring a <a class="ulink" href="https://docs.gradle.org/current/dsl/org.gradle.api.tasks.wrapper.Wrapper.html" target="_top"><code class="classname">Wrapper</code></a>
-task in your build script, and then executing it.
-</p><div class="example"><a name="wrapperSimple"></a><p class="title"><b>Example&nbsp;5.2.&nbsp;Wrapper task</b></p><div class="example-contents"><p><code class="filename">build.gradle</code></p><pre class="programlisting">task wrapper(type: Wrapper) {
+包装器还可以通过在你的构建脚本中添加<a class="ulink" href="https://docs.gradle.org/current/dsl/org.gradle.api.tasks.wrapper.Wrapper.html" target="_top"><code class="classname">Wrapper</code></a>
+任务来进行深入详细地定制，然后再调用它。
+</p><div class="example"><a name="wrapperSimple"></a><p class="title"><b>例子&nbsp;5.2.&nbsp;Wrapper任务</b></p><div class="example-contents"><p><code class="filename">build.gradle</code></p><pre class="programlisting">task wrapper(type: Wrapper) {
     gradleVersion = <span class="hl-string">'2.0'</span>
 }
 </pre></div></div><br class="example-break"><p>
-After such an execution you find the following new or updated files in your project directory
-(in case the default configuration of the Wrapper task is used).
-</p><div class="example"><a name="wrapperSimple"></a><p class="title"><b>Example&nbsp;5.3.&nbsp;Wrapper generated files</b></p><div class="example-contents"><p>Build layout</p><pre class="programlisting">simple/
+通过这样的调用你将会在你的项目目录中发现下面的新的或者更新的文件（确保默认的Wrapper任务配置已经使用）
+</p><div class="example"><a name="wrapperSimple"></a><p class="title"><b>例子&nbsp;5.3.&nbsp;Wrapper生成的文件</b></p><div class="example-contents"><p>Build layout</p><pre class="programlisting">simple/
   gradlew
   gradlew.bat
   gradle/wrapper/
     gradle-wrapper.jar
     gradle-wrapper.properties
 </pre></div></div><br class="example-break"><p>
-All of these files <span class="emphasis"><em>should</em></span> be submitted to your version control system. This only needs to be done once. After
-these files have been added to the project, the project should then be built with the added <span class="command"><strong>gradlew</strong></span> command.
-The <span class="command"><strong>gradlew</strong></span> command can be used <span class="emphasis"><em>exactly</em></span> the same way as the <span class="command"><strong>gradle</strong></span> command.
-</p><p>If you want to switch to a new version of Gradle you don't need to rerun the <code class="literal">wrapper</code> task. It is good enough
-to change the respective entry in the <code class="literal">gradle-wrapper.properties</code> file, but if you want to take
-advantage of new functionality in the Gradle wrapper, then you would need to regenerate the wrapper files.
-</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:configuration" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:configuration"></a>5.3.&nbsp;Configuration</h2></div></div></div><p>If you run Gradle with <span class="command"><strong>gradlew</strong></span>, the Wrapper checks if a Gradle distribution for the Wrapper
-is available. If so, it delegates to the <span class="command"><strong>gradle</strong></span>
-command of this distribution with all the arguments passed originally to the <span class="command"><strong>gradlew</strong></span>
-command. If it didn't find a Gradle distribution, it will download it first.
+所有这些文件都<span class="emphasis"><em>应该</em></span>提交到你的版本控制系统中。者只要做一次提交就可以了。
+当这些文件都被添加到工程中，工程应该用<span class="command"><strong>gradlew</strong></span>命令重新构建。
+<span class="command"><strong>gradlew</strong></span>命令使用方式和<span class="command"><strong>gradle</strong></span>命令<span class="emphasis"><em>几乎一样</em></span>。
+</p><p>如果你想要转换到新的Gradle版本，你没有必要返回<code class="literal">wrapper</code>任务，
+改变<code class="literal">gradle-wrapper.properties</code>文件的各自条目将会是更好的选择, 但是如果你想要使用Gradle包装器中的新功能，你需要重新生成包装器文件。
+</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:configuration" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:configuration"></a>5.3.&nbsp;配置</h2></div></div></div><p>如果你用<span class="command"><strong>gradlew</strong></span>运行Gradle, 包装器会检查包装器所申明的Gradle发布版是否可用。
+如果可用，它将会把这个版本的<span class="command"><strong>gradle</strong></span>
+命令包括所有参数原封不动委派给<span class="command"><strong>gradlew</strong></span>
+命令。 如果没有找到这个版本，它会先下载这个版本。
 </p><p>
-When you configure the <code class="literal">Wrapper</code> task, you can specify the Gradle version you wish to use. The <span class="command"><strong>gradlew</strong></span>
-command will download the appropriate distribution from the Gradle repository.
-Alternatively, you can specify the download URL of the Gradle distribution. The <span class="command"><strong>gradlew</strong></span> command will use this URL to download
-the distribution.
-If you specified neither a Gradle version nor download URL, the <span class="command"><strong>gradlew</strong></span> command will download whichever version
-of Gradle was used to generate the Wrapper files.
-</p><p>For the details on how to configure the Wrapper, see the <a class="ulink" href="https://docs.gradle.org/current/dsl/org.gradle.api.tasks.wrapper.Wrapper.html" target="_top"><code class="classname">Wrapper</code></a> class in the API documentation.
-</p><p>If you don't want any download to happen when your project is built via <span class="command"><strong>gradlew</strong></span>, simply add the Gradle
-distribution zip to your version control at the location specified by your Wrapper configuration.
-A relative URL is supported - you can specify a distribution file relative to the location of <code class="literal">gradle-wrapper.properties</code> file.
-</p><p>If you build via the Wrapper, any existing Gradle distribution installed on the machine is ignored.
-</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:verification" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:verification"></a>5.4.&nbsp;Verification of downloaded Gradle distributions</h2></div></div></div><p>The Gradle Wrapper allows for verification of the downloaded Gradle distribution via SHA-256 hash sum comparison.
-This increases security against targeted attacks by preventing a man-in-the-middle attacker from tampering with the downloaded Gradle distribution.
+当你配置<code class="literal">Wrapper</code>任务时, 你可以指定你想用的Gradle版本。<span class="command"><strong>gradlew</strong></span>
+命令会从Gradle仓库中下载合适的发布版本。
+你也可以指定Gradle发布版的下载URL，<span class="command"><strong>gradlew</strong></span>命令会用这个URL来下载你所需要的发布版。
+如果你没有指定Gradle版本或者下载的URL，<span class="command"><strong>gradlew</strong></span>将会下载任意一个Gradle版本来生成包装器文件。
+</p><p>想得到更多的配置包装器的细节，可以去看API文档中的<a class="ulink" href="https://docs.gradle.org/current/dsl/org.gradle.api.tasks.wrapper.Wrapper.html" target="_top"><code class="classname">Wrapper</code></a>类。
+</p><p>如果你不想这样的下载发生在你的<span class="command"><strong>gradlew</strong></span>运行中, 
+你可以简单地将Gradle发布版zip压缩包放到你的包装器配置所指定的版本控制的地方。
+相对的URL地址也是支持的---你可以指定发布版文件的相对地址到<code class="literal">gradle-wrapper.properties</code>文件中。
+</p><p>如果你通过包装器构建，其它任何在机器上已经安装的Gradle发布版将会被忽略。
+</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:verification" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:verification"></a>5.4.&nbsp;下载的Gradle发布版的验证</h2></div></div></div><p>
+Gradle包装器允许用SHA-256哈希和校验来对你下载的Gradle发布版进行验证。这会增加安全性防止那些中间攻击者有目的性地篡改所下载的Gradle发布版的。
 </p><p>
-To enable this feature you'll want to first calculate the SHA-256 hash of a known Gradle distribution. You can generate a SHA-256 hash from Linux and
-OSX or Windows (via <a class="ulink" href="https://www.cygwin.com/" target="_top">Cygwin</a>) with the <span class="command"><strong>shasum</strong></span> command.
-</p><div class="example"><a name="N10457"></a><p class="title"><b>Example&nbsp;5.4.&nbsp;Generating a SHA-256 hash</b></p><div class="example-contents"><pre class="programlisting">&gt; shasum -a 256 gradle-2.4-all.zip
+为了支持这个feature，你需要计算出一个一直的Gradle发布版的SHA-256哈希码。你可以从OSX or Windows (通过<a class="ulink" href="https://www.cygwin.com/" target="_top">Cygwin</a>)
+用<span class="command"><strong>shasum</strong></span>命令生成SHA-256哈希码。
+</p><div class="example"><a name="N10457"></a><p class="title"><b>例子&nbsp;5.4.&nbsp;生成SHA-256哈希码</b></p><div class="example-contents"><pre class="programlisting">&gt; shasum -a 256 gradle-2.4-all.zip
 371cb9fbebbe9880d147f59bab36d61eee122854ef8c9ee1ecf12b82368bcf10  gradle-2.4-all.zip
 </pre></div></div><br class="example-break"><p>
-Add the returned hash sum to the <code class="literal">gradle-wrapper.properties</code> using the <code class="literal">distributionSha256Sum</code> property.
-</p><div class="example"><a name="N10464"></a><p class="title"><b>Example&nbsp;5.5.&nbsp;Configuring SHA-256 checksum verification</b></p><div class="example-contents"><p><code class="filename">gradle-wrapper.properties</code></p><pre class="programlisting">distributionSha256Sum=371cb9fbebbe9880d147f59bab36d61eee122854ef8c9ee1ecf12b82368bcf10
-</pre></div></div><br class="example-break"></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:unix_file_permissions" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:unix_file_permissions"></a>5.5.&nbsp;Unix file permissions</h2></div></div></div><p>The Wrapper task adds appropriate file permissions to allow the execution of the <code class="literal">gradlew</code> *NIX command.
-Subversion preserves this file permission. We are not sure how other version control systems deal with this.
-What should always work is to execute “<code class="literal">sh gradlew</code>”.
-</p></div></div><div class="chapter"><div class="titlepage"><div><div><h1><a name="gradle_daemon"></a>Chapter&nbsp;6.&nbsp;The Gradle Daemon</h1></div></div></div><p><a name="what_is_the_daemon"></a>From Wikipedia…</p><div class="blockquote"><blockquote class="blockquote">
-A daemon is a computer program that runs as a background process,
-rather than being under the direct control of an interactive user.
+ 用<code class="literal">distributionSha256Sum</code>属性添加返回的哈希校验和到<code class="literal">gradle-wrapper.properties</code>中。
+</p><div class="example"><a name="N10464"></a><p class="title"><b>例子&nbsp;5.5.&nbsp;配置SHA-256校验和认证</b></p><div class="example-contents"><p><code class="filename">gradle-wrapper.properties</code></p><pre class="programlisting">distributionSha256Sum=371cb9fbebbe9880d147f59bab36d61eee122854ef8c9ee1ecf12b82368bcf10
+</pre></div></div><br class="example-break"></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:unix_file_permissions" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:unix_file_permissions"></a>5.5.&nbsp;Unix文件权限</h2></div></div></div><p>
+包装器任务添加合适的文件权限来调用<code class="literal">gradlew</code> *NIX命令.
+子版本将会保持这个文件权限。我们不清楚别的版本控制系统对这个是如何处理的。
+能够保证运行的命令是“<code class="literal">sh gradlew</code>”.
+</p></div></div><div class="chapter"><div class="titlepage"><div><div><h1><a name="gradle_daemon"></a>第6章.&nbsp;Gradle守护进程</h1></div></div></div><p><a name="what_is_the_daemon"></a>来自维基百科...</p><div class="blockquote"><blockquote class="blockquote">
+守护进程是运行在后台的计算机程序，不直接受交互用户所控制的。
 </blockquote></div><p>Gradle runs on the Java Virtual Machine (JVM) and uses several supporting libraries that require a
 non-trivial initialization time. As a result, it can sometimes seem a little slow to start. The solution
 to this problem is the Gradle <em class="firstterm">Daemon</em>: a long-lived background process that executes
