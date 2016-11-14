@@ -473,45 +473,46 @@ Gradle包装器允许用SHA-256哈希和校验来对你下载的Gradle发布版�
 能够保证运行的命令是“<code class="literal">sh gradlew</code>”.
 </p></div></div><div class="chapter"><div class="titlepage"><div><div><h1><a name="gradle_daemon"></a>第6章.&nbsp;Gradle守护进程</h1></div></div></div><p><a name="what_is_the_daemon"></a>来自维基百科...</p><div class="blockquote"><blockquote class="blockquote">
 守护进程是运行在后台的计算机程序，不直接受交互用户所控制的。
-</blockquote></div><p>Gradle runs on the Java Virtual Machine (JVM) and uses several supporting libraries that require a
-non-trivial initialization time. As a result, it can sometimes seem a little slow to start. The solution
-to this problem is the Gradle <em class="firstterm">Daemon</em>: a long-lived background process that executes
-your builds much more quickly than would otherwise be the case. We accomplish this by avoiding the expensive
-bootstrapping process as well as leveraging caching, by keeping data about your project in memory. Running
-Gradle builds with the Daemon is no different than without. Simply configure whether you want to use it or
-not - everything else is handled transparently by Gradle.</p><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:why_the_daemon" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:why_the_daemon"></a>6.1.&nbsp;Why the Gradle Daemon is important for performance</h2></div></div></div><p>The Daemon is a long-lived process, so not only are we able to avoid the cost of JVM startup for
-every build, but we are able to cache information about project structure, files, tasks, and more in memory.
-</p><p>The reasoning is simple: improve build speed by reusing computations from previous builds.
-However, the benefits are dramatic: we typically measure build times reduced by 15-75% on
-subsequent builds. We recommend profiling your build by using <code class="literal">--profile</code> to get
-a sense of how much impact the Gradle Daemon can have for you.</p><p>The Gradle Daemon is enabled by default starting with Gradle 3.0, so you don't have to do anything
-to benefit from it.</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:status" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:status"></a>6.2.&nbsp;Running Daemon Status</h2></div></div></div><p>To get a list of running Gradle Daemons and their statuses use the <span class="command"><strong>--status</strong></span> command.</p><p>Sample output:
+</blockquote></div><p>Gradle运行在Java虚拟机（JVM）上并且使用了一些需要消耗不少的初始化时间的支持库。
+结果有些时候就可以看出启动的时候有些慢。解决这个问题的方法就是Gradle
+<em class="firstterm">守护进程</em>: 一个长期运行在后台进程，执行你的构建将会比不用快挺多的。
+我们是类似利用缓存的原理来避免昂贵的引导过程的消耗来实现这样的速度的，
+通过将你的数据保存在内存中。在有守护进程和没有守护进程下运行Gradle的效果是一样的。
+使用和禁用的配置也是非常简单的-所有的事情都是通过Gradle透明地进行处理。
+</p><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:why_the_daemon" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:why_the_daemon"></a>6.1.&nbsp;为什么Gradle守护进程对于性能是如此重要的</h2></div></div></div><p>
+这个守护进程是一个长期运行的程序，通过它我们不仅能够避免每次构建的JVM启动消耗，
+而且我们能够缓存项目结构、文件、任务等信息到内存中。
+</p><p>原因是非常浅显的：通过重用前面构建所节约的计算时间来提高构建速度。
+然而，这个时间节省效果并不是固定的：在后继的构建中我们通常能够减少大概15-75%的构建时间。我们建议你查看你的构建时间图，用
+<code class="literal">--profile</code>来获取Gradle守护进程能够给你带来的效果。</p><p>Gradle守护进程在Gradle 3.0启动的时候就开启了，
+所以你没有必要做任何事情就可以从中受益。</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:status" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:status"></a>6.2.&nbsp;运行守护进程状态</h2></div></div></div><p>为了获取运行Gradle守护进程的列表和他们的状态你可以用<span class="command"><strong>--status</strong></span>命令。</p><p>样例输出：
 </p><pre class="programlisting">  PID VERSION                 STATUS
 28411 3.0                     IDLE
 34247 3.0                     BUSY
 </pre><p>
 </p><p>
-Currently, a given Gradle version can only connect to daemons of the same version.
-This means the status output will only show Daemons for the version of Gradle being invoked and not for any other versions. Future versions of Gradle will lift this constraint and will show
-the running Daemons for all versions of Gradle.
-</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:disabling_the_daemon" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:disabling_the_daemon"></a>6.3.&nbsp;Disabling the Daemon</h2></div></div></div><p>The Gradle Daemon is enabled by default, and we recommend always enabling it for developers’
-machines. There are several ways to disable the Daemon, but the most common one is to add the line
+目前，一个给定的Gradle版本只能够连接相同版本的守护进程。
+这意味着状态输出只会显示当前参与工作Gradle版本的守护进程并不是所有版本的。
+后续版本的Gradle将会去掉这个限制并且显示所有Gradle版本的守护进程。
+</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:disabling_the_daemon" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:disabling_the_daemon"></a>6.3.&nbsp;禁用守护进程</h2></div></div></div><p>
+Gradle守护进程默认是开启的，我们推荐对于开发设备总是开启它。
+有多种方式可以禁用守护进程，其中最常用的一种是添加下面的一行
 </p><pre class="programlisting">org.gradle.daemon=false
 </pre><p>
-to the file <code class="literal">«USER_HOME»/.gradle/gradle.properties</code>, where <code class="literal">«USER_HOME»</code>
-is your home directory. That’s typically one of the following, depending on your platform:
+到<code class="literal">«USER_HOME»/.gradle/gradle.properties</code>配置文件中, 其中<code class="literal">«USER_HOME»</code>
+是你的home目录。具体在哪里依赖于你的系统平台：
 </p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p><code class="filename">C:\Users\&lt;username&gt;</code> (Windows Vista &amp; 7+)</p></li><li class="listitem"><p><code class="filename">/Users/&lt;username&gt;</code> (Mac OS X)</p></li><li class="listitem"><p><code class="filename">/home/&lt;username&gt;</code> (Linux)</p></li></ul></div><p>
-If that file doesn’t exist, just create it using a text editor. You can find details of other ways to disable
-(and enable) the Daemon in <a class="xref" href="https://docs.gradle.org/current/userguide/userguide_single.html#daemon_faq">Section&nbsp;6.5, “FAQ”</a> further down. That section also contains more detailed information on
-how the Daemon works.</p><p>Once you have globally enabled the Daemon in this way, all your builds will take advantage of the
-speed boost, regardless of the version of Gradle a particular build uses.</p><div class="tip"><h3 class="title">Continuous integration</h3><p>At the moment, we recommend that you disable the Daemon for Continuous Integration servers
-as correctness is usually a priority over speed in CI environments. Using a fresh runtime for
-each build is more reliable since the runtime is <span class="emphasis"><em>completely</em></span>
-isolated from any previous builds. Additionally, since the Daemon primarily acts to reduce build
-startup times, this isn't as critical in CI as it is on a developer's machine.</p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:stopping_an_existing_daemon" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:stopping_an_existing_daemon"></a>6.4.&nbsp;Stopping an existing Daemon</h2></div></div></div><p>As mentioned, the Daemon is a background process. You needn’t worry about a build up of Gradle
-processes on your machine, though. Every Daemon monitors its memory usage compared to total system memory
-and will stop itself if idle when available system memory is low. If you want to explicitly stop running
-Daemon processes for any reason, just use the command <strong class="userinput"><code>gradle --stop</code></strong>.</p><p>This will terminate all Daemon processes that were started with the same version of Gradle used to execute the
+如果这个文件不存在，用文本编辑器创建它。
+你可以在后续的<a class="xref" href="https://docs.gradle.org/current/userguide/userguide_single.html#daemon_faq">章节&nbsp;6.5, “FAQ”</a>发现别的方式的细节来禁用守护进程。
+那个部分同样包含了关于守护进程工作具体细节的信息。</p><p>
+一旦你通过这样的方式全局设置了守护进程，所有的构建都会利用它带来的速度提升。不管它是什么样的特殊版本。</p><div class="tip"><h3 class="title">持续构建</h3><p>在这一刻，我们建议你在持续构建服务中禁用守护进程，由于在CI环境下正确性通常比速度有更高的优先级。
+对于每一个构建都使用一个新的运行时是更加可靠的因为运行时是一个<span class="emphasis"><em>完全</em></span>独立于之前构建的
+另外的，由于守护进程主要是作用于减少构建的启动时间，这对于CI来说并不是很重要的，因为它就是运行在开发者的机器上的。</p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:stopping_an_existing_daemon" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:stopping_an_existing_daemon"></a>6.4.&nbsp;停止一个已经存在的守护进程</h2></div></div></div><p>
+如同上面所提及的，守护进程是一个后台运行的程序。
+你没有必要担心Gradle程序构建超出设备的负载。
+每一个守护进程都会依照系统的总内存量管理它的内存使用，
+当系统内存很少时候他们就会停止空闲的守护进程。
+如果你想要显示地停止正在运行的守护进程无论什么原因，只要使用<strong class="userinput"><code>gradle --stop</code></strong>命令。</p><p>This will terminate all Daemon processes that were started with the same version of Gradle used to execute the
 command. If you have the Java Development Kit (JDK) installed, you can easily verify that a Daemon has stopped by
 running the <span class="command"><strong>jps</strong></span> command. You’ll see any running Daemons listed with the name <code class="literal">GradleDaemon</code>.</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="daemon_faq" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#daemon_faq"></a>6.5.&nbsp;FAQ</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="sec:ways_to_disable_gradle_daemon" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:ways_to_disable_gradle_daemon"></a>6.5.1.&nbsp;How do I disable the Gradle Daemon?</h3></div></div></div><p>
 There are two recommended ways to disable the Daemon persistently for an environment:
