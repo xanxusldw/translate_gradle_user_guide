@@ -512,86 +512,82 @@ Gradle守护进程默认是开启的，我们推荐对于开发设备总是开�
 你没有必要担心Gradle程序构建超出设备的负载。
 每一个守护进程都会依照系统的总内存量管理它的内存使用，
 当系统内存很少时候他们就会停止空闲的守护进程。
-如果你想要显示地停止正在运行的守护进程无论什么原因，只要使用<strong class="userinput"><code>gradle --stop</code></strong>命令。</p><p>This will terminate all Daemon processes that were started with the same version of Gradle used to execute the
-command. If you have the Java Development Kit (JDK) installed, you can easily verify that a Daemon has stopped by
-running the <span class="command"><strong>jps</strong></span> command. You’ll see any running Daemons listed with the name <code class="literal">GradleDaemon</code>.</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="daemon_faq" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#daemon_faq"></a>6.5.&nbsp;FAQ</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="sec:ways_to_disable_gradle_daemon" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:ways_to_disable_gradle_daemon"></a>6.5.1.&nbsp;How do I disable the Gradle Daemon?</h3></div></div></div><p>
-There are two recommended ways to disable the Daemon persistently for an environment:
-</p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p>Via environment variables: add the flag <code class="literal">-Dorg.gradle.daemon=false</code> to the <code class="literal">GRADLE_OPTS</code> environment variable</p><p>Via properties file: add <code class="literal">org.gradle.daemon=false</code> to the <code class="literal">«GRADLE_USER_HOME»/gradle.properties</code> file</p></li></ul></div><div class="note"><p>
-Note, <code class="literal">«GRADLE_USER_HOME»</code> defaults to <code class="literal">«USER_HOME»/.gradle</code>, where <code class="literal">«USER_HOME»</code> is the home directory of the current user.
-This location can be configured via the <code class="literal">-g</code> and <code class="literal">--gradle-user-home</code> command line switches,
-as well as by the <code class="literal">GRADLE_USER_HOME</code> environment variable and <code class="literal">org.gradle.user.home</code> JVM system property.
+如果你想要显示地停止正在运行的守护进程无论什么原因，只要使用<strong class="userinput"><code>gradle --stop</code></strong>命令。</p><p>
+这会终止所有的已经启动的守护进程和用来执行命令的同样的Gradle版本。
+如果你已经安装了Java开发工具包(JDK)，你可以用<span class="command"><strong>jps</strong></span>命令非常轻松地验证守护进程时候关闭。
+你会看到任意运行的守护进程被列出来还有名字<code class="literal">GradleDaemon</code>。</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="daemon_faq" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#daemon_faq"></a>6.5.&nbsp;经常问到的问题</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="sec:ways_to_disable_gradle_daemon" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:ways_to_disable_gradle_daemon"></a>6.5.1.&nbsp;我应该如何禁用Gradle守护进程？</h3></div></div></div><p>
+下面有两种推荐的方式永久禁用一个环境中的守护进程：
+</p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p>通过环境变量：添加标记<code class="literal">-Dorg.gradle.daemon=false</code>到<code class="literal">GRADLE_OPTS</code>环境变量中</p><p>通过属性文件：添加<code class="literal">org.gradle.daemon=false</code>到<code class="literal">«GRADLE_USER_HOME»/gradle.properties</code>文件中</p></li></ul></div><div class="note"><p>
+注意,<code class="literal">«GRADLE_USER_HOME»</code>默认是在<code class="literal">«USER_HOME»/.gradle</code>, <code class="literal">«USER_HOME»</code>是当前用户的home目录。
+这个位置可以通过<code class="literal">-g</code>和<code class="literal">--gradle-user-home</code>命令行转换进行配置，
+这和通过<code class="literal">GRADLE_USER_HOME</code>环境变量或者<code class="literal">org.gradle.user.home</code>JVM系统属性是一致的。
 </p></div><p>
-Both approaches have the same effect.
-Which one to use is up to personal preference.
-Most Gradle users choose the second option and add the entry to the user <code class="literal">gradle.properties</code> file.
+两种方式都有着同样的效果。使用哪个就看个人的喜好选择了。
+大多数的Gradle用户选择第二种方式，添加条目到用户的<code class="literal">gradle.properties</code>文件中。
 </p><p>
-On Windows, this command will disable the Daemon for the current user:
+在Window平台上，下面的命令会禁用当前用户的守护进程：
 </p><pre class="programlisting">(if not exist "%USERPROFILE%/.gradle" mkdir "%USERPROFILE%/.gradle") &amp;&amp; (echo org.gradle.daemon=false &gt;&gt; "%USERPROFILE%/.gradle/gradle.properties")
 </pre><p>
-On UNIX-like operating systems, the following Bash shell command will disable the Daemon for the current user:
+在类Unix平台上，下面的Bash Shell 命令行将会禁用当前用户的守护进程：
 </p><pre class="programlisting">mkdir -p ~/.gradle &amp;&amp; echo "org.gradle.daemon=false" &gt;&gt; ~/.gradle/gradle.properties
 </pre><p>
-Once the Daemon is disabled for a build environment in this way, a Gradle Daemon will not be started unless explicitly requested using the <code class="literal">--daemon</code> option.
+一旦通过这种方式禁用了构建环境的守护进程，Gradle守护将不会启动除非你显示地用--daemon选项提出启动。
 </p><p>
-The <code class="literal">--daemon</code> and <code class="literal">--no-daemon</code> command line options enable and disable usage of the Daemon for individual build invocations when using the Gradle command line interface.
-These command line options have the <span class="emphasis"><em>highest</em></span> precedence when considering the build environment.
-Typically, it is more convenient to enable the Daemon for an environment (e.g. a user account) so that all builds use the Daemon without requiring to remember to supply the <code class="literal">--daemon</code> option.
-</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="sec:why_is_there_more_than_one_daemon_process_on_my_machine" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:why_is_there_more_than_one_daemon_process_on_my_machine"></a>6.5.2.&nbsp;Why is there more than one Daemon process on my machine?</h3></div></div></div><p>
-There are several reasons why Gradle will create a new Daemon, instead of using one that is already running.
-The basic rule is that Gradle will start a new Daemon if there are no existing idle or compatible Daemons available.
-Gradle will kill any Daemon that has been idle for 3 hours or more, so you don't have to worry about
-cleaning them up manually.
-</p><div class="variablelist"><dl><dt><span class="term">idle</span></dt><dd><p>An idle Daemon is one that is not currently executing a build or doing other useful
-work.</p></dd><dt><span class="term">compatible</span></dt><dd><p>A compatible Daemon is one that can (or can be made to) meet the requirements of the
-requested build environment. The Java runtime used to execute the build is an example
-aspect of the build environment. Another example is the set of JVM system properties
-required by the build runtime.</p></dd></dl></div><p>
-Some aspects of the requested build environment may not be met by an Daemon.
-If the Daemon is running with a Java 7 runtime, but the requested environment calls for Java 8, then the Daemon is not compatible and another must be started.
-Moreover, certain properties of a Java runtime cannot be changed once the JVM has started.
-For example, it is not possible to change the memory allocation (e.g. <code class="literal">-Xmx1024m</code>), default text encoding, default locale, etc of a running JVM.
+<code class="literal">--daemon</code>和<code class="literal">--no-daemon</code>命令行选项会为你的个人构建调用启用或者禁用守护的使用当在使用Gradle命令行接口的时候。
+这些命令行选项拥有<span class="emphasis"><em>最高的</em></span>优先级当考虑到构建环境时。
+很明显，如使用环境变量启用守护是非常便捷的（如用户账户）这样的话所有构建将会使用守护而不需要每次都记着用<code class="literal">--daemon</code>选项。
+</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="sec:why_is_there_more_than_one_daemon_process_on_my_machine" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:why_is_there_more_than_one_daemon_process_on_my_machine"></a>6.5.2.&nbsp;为什么在我的机器上会有多个守护进程？</h3></div></div></div><p>
+Gradle创建一个新的守护而不是用已经运行的是有多个原因。
+最基本的Gradle 会启动一个新的守护如果没有存在空闲的或者有兼容的守护可用。
+Gradle将会杀死任意的空闲超过3个小时的守护，所以你不用担心手动清理它们的麻烦。
+</p><div class="variablelist"><dl><dt><span class="term">空闲</span></dt><dd><p>一个空闲的守护就是当前没有用来执行构建或者做一些有用的工作的守护。
+</p></dd><dt><span class="term">兼容</span></dt><dd><p>一个兼容的守护就是能够（或者被用来）满足构建环境需求的守护。
+被用来执行构建的java运行时就是构建环境方面的例子。
+另一个例子就是一些列的被构建运行时需要的JVM系统属性。</p></dd></dl></div><p>
+一些构建环境方面可能不能满足守护需求。如果守护是运行在Java 7的运行时，但是需求的环境时Java 8，
+那么守护是不兼容构建的并且需要启动一个新的守护。
+还有就是，Java运行时的明确属性是不能在JVM启动后修改的。
+比如，不可能改变运行中的JVM的内存分配(e.g. <code class="literal">-Xmx1024m</code>), 默认的文本编码，默认语言等。
 </p><p>
-The “requested build environment” is typically constructed implicitly from aspects of the build client’s (e.g. Gradle command line client, IDE etc.) environment and explicitly via command line switches and settings.
-See <a class="xref" href="https://docs.gradle.org/current/userguide/userguide_single.html#build_environment">Chapter&nbsp;12, <i>The Build Environment</i></a> for details on how to specify and control the build environment.
+“被请求的构建环境”是可以从构建客户端（Gradle命令行客户端，IDE等）环境隐式典型地构造或者通过命令行转换和设置显示构造。
+查阅<a class="xref" href="https://docs.gradle.org/current/userguide/userguide_single.html#build_environment">章节&nbsp;12, <i>构建环境</i></a>获取如何指定和控制构建环境的细节。
 </p><p>
-The following JVM system properties are effectively immutable.
-If the requested build environment requires any of these properties, with a different value than a Daemon’s JVM has for this property, the Daemon is not compatible.
+下面的JVM系统属性实际上是不可变的。如果被请求的构建环境需要这属性中的任意一个，并赋予不同于JVM已经设定的值， 这样的守护是不兼容的。
 </p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem">file.encoding</li><li class="listitem">user.language</li><li class="listitem">user.country</li><li class="listitem">user.variant</li><li class="listitem">java.io.tmpdir</li><li class="listitem">javax.net.ssl.keyStore</li><li class="listitem">javax.net.ssl.keyStorePassword</li><li class="listitem">javax.net.ssl.keyStoreType</li><li class="listitem">javax.net.ssl.trustStore</li><li class="listitem">javax.net.ssl.trustStorePassword</li><li class="listitem">javax.net.ssl.trustStoreType</li><li class="listitem">com.sun.management.jmxremote</li></ul></div><p>
-The following JVM attributes, controlled by startup arguments, are also effectively immutable.
-The corresponding attributes of the requested build environment and the Daemon’s environment must match exactly in order for a Daemon to be compatible.
+如下的JVM属性是通过启动参数控制的，也是实际上不可变的。
+相关的被请求的构建环境和守护环境的属性必须对守护来说完全兼容可用。
 </p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem">The maximum heap size (i.e. the -Xmx JVM argument)</li><li class="listitem">The minimum heap size (i.e. the -Xms JVM argument)</li><li class="listitem">The boot classpath (i.e. the -Xbootclasspath argument)</li><li class="listitem">The “assertion” status (i.e. the -ea argument)</li></ul></div><p>
-The required Gradle version is another aspect of the requested build environment.
-Daemon processes are coupled to a specific Gradle runtime.
-Working on multiple Gradle projects during a session that use different Gradle versions is a common reason for having more than one running Daemon process.
-</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="sec:how_much_memory_does_the_daemon_use_and_can_i_give_it_more" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:how_much_memory_does_the_daemon_use_and_can_i_give_it_more"></a>6.5.3.&nbsp;How much memory does the Daemon use and can I give it more?</h3></div></div></div><p>
-If the requested build environment does not specify a maximum heap size, the Daemon will use up to 1GB of heap.
-It will use your the JVM's default minimum heap size.
-1GB is more than enough for most builds.
-Larger builds with hundreds of subprojects, lots of configuration, and source code may require, or perform better, with more memory.
+需要的Gradle版本是被请求的构建环境的另一个方面。
+守护进程是耦合到一个特定的守护运行时中的。
+在不同的Gradle版本的任务期间，同时在多个守护项目上工作是有多个运行的守护进程的常见的原因。
+</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="sec:how_much_memory_does_the_daemon_use_and_can_i_give_it_more" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:how_much_memory_does_the_daemon_use_and_can_i_give_it_more"></a>6.5.3.&nbsp;守护需要多少内存，我是否需要给它更多？</h3></div></div></div><p>
+如果被请求的构建环境没有指定一个最大的堆内存大小，守护将会用1GB的堆。
+它将会用你的JVM默认的最小堆大小。1GB对于大多数构建已经够用了。
+拥有上千个子项目，许多配置，以及大量源码的大型构建将会需要更多内存运行更流畅。
 </p><p>
-To increase the amount of memory the Daemon can use, specify the appropriate flags as part of the requested build environment.
-Please see <a class="xref" href="https://docs.gradle.org/current/userguide/userguide_single.html#build_environment">Chapter&nbsp;12, <i>The Build Environment</i></a> for details.
-</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="sec:how_can_i_stop_a_daemon" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:how_can_i_stop_a_daemon"></a>6.5.4.&nbsp;How can I stop a Daemon?</h3></div></div></div><p>
-Daemon processes will automatically terminate themselves after 3 hours of inactivity or less.
-If you wish to stop a Daemon process before this, you can either kill the process via your operating system or run the <code class="literal">gradle --stop</code> command.
-The <code class="literal">--stop</code> switch causes Gradle to request that <span class="emphasis"><em>all</em></span> running Daemon processes, <span class="emphasis"><em>of the same Gradle version used to run the command</em></span>, terminate themselves.
-</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="sec:what_can_go_wrong_with_daemon" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:what_can_go_wrong_with_daemon"></a>6.5.5.&nbsp;What can go wrong with Daemon?</h3></div></div></div><p>
-Considerable engineering effort has gone into making the Daemon robust, transparent and unobtrusive during day to day development.
-However, Daemon processes can occasionally be corrupted or exhausted.
-A Gradle build executes arbitrary code from multiple sources.
-While Gradle itself is designed for and heavily tested with the Daemon, user build scripts and third party plugins can destabilize the Daemon process through defects such as memory leaks or global state corruption.
+想要增加守护进程能够使用的内存数量，指定合适的标记作为被请求构建的一部分。请查看<a class="xref" href="https://docs.gradle.org/current/userguide/userguide_single.html#build_environment">章节&nbsp;12, <i>构建环境</i></a>获取更多的信息。
+</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="sec:how_can_i_stop_a_daemon" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:how_can_i_stop_a_daemon"></a>6.5.4.&nbsp;我如何停止守护？</h3></div></div></div><p>
+守护进程会终止它们自己如果它们已经超过3小时处于不运行状态下。
+如果你想在这之前停止它们，你可以用你的操作系统或者<code class="literal">gradle --stop</code>命令行。
+<code class="literal">--stop</code>转换将会请求<span class="emphasis"><em>所有的</em></span><span class="emphasis"><em>以这个Gradle版本命令行启动的</em></span>运行时守护进程, 终止它们自己。
+</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="sec:what_can_go_wrong_with_daemon" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:what_can_go_wrong_with_daemon"></a>6.5.5.&nbsp;守护进程什么地方容易出错？</h3></div></div></div><p>
+大量的开发工作投入到使守护健壮，透明，和不引人注意中。
+然而，守护进程偶然地也会崩溃或者耗尽。
+Gradle构建从多种源码中运行任意的代码。
+尽管Gradle本身就是为守护进程设计的并且进行了大量的测试，但是构建脚本还有第三方插件都会有破坏守护进程的缺陷比如内存泄漏和全局状态的崩溃。
 </p><p>
-It is also possible to destabilize the Daemon (and build environment in general) by running builds that do not release resources correctly.
-This is a particularly poignant problem when using Microsoft Windows as it is less forgiving of programs that fail to close files after reading or writing.
+运行构建的时候没有正确的发布资源也可能破坏守护进程的稳定性。
+这是非常重要的问题特别是在用微软的Window的时候，由于这个系统对于文件读取写入后的失败错误是比较严格的。
 </p><p>
-Gradle actively monitors heap usage and attempts to detect when a leak is starting to exhaust the available heap space in the daemon. When it detects a
-problem, the Gradle daemon will finish the currently running build and proactively restart the daemon on the next build. This monitoring
-is enabled by default, but can be disabled by setting the <code class="literal">org.gradle.daemon.performance.enable-monitoring</code> system property to false.
+Gradle保持活跃地监控着堆使用情况并且尝试检测堆当在守护进程中一个泄漏开始耗尽可用的堆空间时。
+当它检测到一个问题，Gradle守护就会结束当前正在运行的构建并且在下一次构建中主动重启守护。
+这个监控默认是开着的，但是可以通过设置
+<code class="literal">org.gradle.daemon.performance.enable-monitoring</code>系统属性为flase来禁用它。
 </p><p>
-If it is suspected that the Daemon process has become unstable, it can simply be killed.
-Recall that the <code class="literal">--no-daemon</code> switch can be specified for a build to prevent use of the Daemon.
-This can be useful to diagnose whether or not the Daemon is actually the culprit of a problem.
-</p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="when_should_i_not_use_the_gradle_daemon" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#when_should_i_not_use_the_gradle_daemon"></a>6.6.&nbsp;When should I not use the Gradle Daemon?</h2></div></div></div><p>
+如果守护进程有点可疑地变得不稳定，它将被简单地杀死。
+重新调用<code class="literal">--no-daemon</code>开关能够用来设定一个构建阻止守护的使用。
+这对于诊断守护是否出问题的原因是非常有帮助的。
+</p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="when_should_i_not_use_the_gradle_daemon" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#when_should_i_not_use_the_gradle_daemon"></a>6.6.&nbsp;我应该什么时候不使用Gradle守护？</h2></div></div></div><p>
 It is recommended that the Daemon is used in all developer environments.
 It is recommend to <span class="emphasis"><em>disable</em></span> the Daemon for Continuous Integration and build server environments.
 </p><p>
