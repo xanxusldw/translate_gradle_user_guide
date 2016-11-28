@@ -588,63 +588,59 @@ Gradle保持活跃地监控着堆使用情况并且尝试检测堆当在守护�
 重新调用<code class="literal">--no-daemon</code>开关能够用来设定一个构建阻止守护的使用。
 这对于诊断守护是否出问题的原因是非常有帮助的。
 </p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="when_should_i_not_use_the_gradle_daemon" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#when_should_i_not_use_the_gradle_daemon"></a>6.6.&nbsp;我应该什么时候不使用Gradle守护？</h2></div></div></div><p>
-It is recommended that the Daemon is used in all developer environments.
-It is recommend to <span class="emphasis"><em>disable</em></span> the Daemon for Continuous Integration and build server environments.
+推荐在所有的开发环境中使用守护。
+建议在持续集成和构建服务器环境中<span class="emphasis"><em>禁用</em></span>守护。
 </p><p>
-The Daemon enables faster builds, which is particularly important when a human is sitting in front of the build.
-For CI builds, stability and predictability is of utmost importance.
-Using a fresh runtime (i.e. process) for each build is more reliable as the runtime is <span class="emphasis"><em>completely</em></span> isolated from previous builds.
+守护启用快速构建，当有人正在等待构建完成，这是非常重要的。
+对于CI构建， 稳定性和可预测性是最重要的。
+在每一个构建中使用一个新的运行时(等进程)是更可靠的因为运行时<span class="emphasis"><em>完全</em></span>不依赖于之前的构建。
 </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:tools_and_ides" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:tools_and_ides"></a>6.7.&nbsp;Tools &amp; IDEs</h2></div></div></div><p>
-The Gradle Tooling API (see <a class="xref" href="https://docs.gradle.org/current/userguide/userguide_single.html#embedding">Chapter&nbsp;14, <i>Embedding Gradle using the Tooling API</i></a>), that is used by IDEs and other tools to integrate with Gradle, <span class="emphasis"><em>always</em></span> use the Gradle Daemon to execute builds.
-If you are executing Gradle builds from within you're IDE you are using the Gradle Daemon and do not need to enable it for your environment.
+Gradle Tooling API(参考 <a class="xref" href="https://docs.gradle.org/current/userguide/userguide_single.html#embedding">章节&nbsp;14, <i>内嵌使用Tooling API的Gradle</i></a>),是被IDEs和其它的工具集成到Gradle使用的，<span class="emphasis"><em>总是</em></span>使用Gradle守护来执行构建。
+如果你在使用Gradle守护的IDE中执行Gradle构建，你没必要在你的环境中启用它。
 </p><p>
-However, unless you have explicitly enabled the Gradle Daemon for you environment your builds from the command line will not use the Gradle Daemon.
-</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:how_does_the_gradle_daemon_make_builds_faster" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:how_does_the_gradle_daemon_make_builds_faster"></a>6.8.&nbsp;How does the Gradle Daemon make builds faster?</h2></div></div></div><p>
-The Gradle Daemon is a <span class="emphasis"><em>long lived</em></span> build process.
-In between builds it waits idly for the next build.
-This has the obvious benefit of only requiring Gradle to be loaded into memory once for multiple builds, as opposed to once for each build.
-This in itself is a significant performance optimization, but that's not where it stops.
+然而，除非你已经为你的命令行启动的构建环境启用了Gradle守护，否则你是不能用Gradle守护的。
+</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:how_does_the_gradle_daemon_make_builds_faster" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:how_does_the_gradle_daemon_make_builds_faster"></a>6.8.&nbsp;Gradel是如何使构建更快的呢?</h2></div></div></div><p>
+Gradle守护是一个<span class="emphasis"><em>长期存在的</em></span>构建进程。
+在两个构建之间需要空闲地等待下一次构建。
+对于多次构建只需要Gradle加载一次到内存是有非常明显的好处的，而不是为每一次构建都加载。
+这本身是非常重大的性能优化，但不仅仅如此。
 </p><p>
-A significant part of the story for modern JVM performance is runtime code optimization.
-For example, HotSpot (the JVM implementation provided by Oracle and used as the basis of OpenJDK) applies optimization to code while it is running.
-The optimization is progressive and not instantaneous.
-That is, the code is progressively optimized during execution which means that subsequent builds can be faster purely due to this optimization process.
-Experiments with HotSpot have shown that it takes somewhere between 5 and 10 builds for optimization to stabilize.
-The difference in perceived build time between the first build and the 10th for a Daemon can be quite dramatic.
+一个非常重要的现代JVM性能提升例子的一部分就是运行时代买优化。
+比如说，HotSpot(Oracle提供的JVM实现方式并且是OpenJDK的基础)在其运行的时候适用了代码优化。
+这个优化是逐步的的不是瞬间的。
+那就是说，代码是在执行期间一直在优化，由于优化进程后继的构建能够更快。
+HotSpot的使用经验告诉我们需要5到10个构建使优化变稳定。
+使用Gradle的构建第一个和第10个我们能够明显感受到他们的耗时的巨大差异。
 </p><p>
-The Daemon also allows more effective in memory caching across builds.
-For example, the classes needed by the build (e.g. plugins, build scripts) can be held in memory between builds.
-Similarly, Gradle can maintain in-memory caches of build data such as the hashes of task inputs and outputs, used for incremental building.
-</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="sec:potential_future_enhancements" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:potential_future_enhancements"></a>6.8.1.&nbsp;Potential future enhancements</h3></div></div></div><p>
-Currently, the Daemon makes builds faster by effectively supporting in memory caching and by the JVM optimizer making the code faster.
-In future Gradle versions, the Daemon will become even smarter and perform work <span class="emphasis"><em>preemptively</em></span>.
-It could, for example, start downloading dependencies immediately after the build script has been edited under the assumption that the build is about to be run and the newly changed or added dependencies will be required.
+守护在构建期间的内存缓存也有着更高的效率。
+比如说，构建(如插件，构建脚本)需要的类能够保存在内存中供不同构建使用。
+类似地，Gradle能够保持构建数据的内存缓存，如任务输入输出的hash值，被用在增量构建中。
+</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="sec:potential_future_enhancements" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:potential_future_enhancements"></a>6.8.1.&nbsp;潜在的后续功能增强方向</h3></div></div></div><p>
+当前，守护通过更加高效地支持内存缓存和JVM优化器提高代码速度来使构建更快。
+在未来的Gradle版本中，守护将会变得更加的智能并且能够<span class="emphasis"><em>抢占式</em></span>地工作.
+它能够，比如在构建脚本被编辑的时候假定构建将被执行更新的改变或者添加的依赖将被需求，马上开始下载依赖项。
 </p><p>
-There are many other ways in that the Gradle Daemon will enable even faster builds in future Gradle versions.
-</p></div></div></div><div class="chapter"><div class="titlepage"><div><div><h1><a name="artifact_dependencies_tutorial"></a>Chapter&nbsp;7.&nbsp;Dependency Management Basics</h1></div></div></div><p>
-This chapter introduces some of the basics of dependency management in Gradle.
-</p><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:what_is_dependency_management" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:what_is_dependency_management"></a>7.1.&nbsp;What is dependency management?</h2></div></div></div><p>
-Very roughly, dependency management is made up of two pieces. Firstly, Gradle needs to
-know about the things that your project needs to build or run, in order to find them. We call these incoming
-files the <em class="firstterm">dependencies</em> of the project.
-Secondly, Gradle needs to build and upload the things that your project produces. We call these outgoing files
-the <em class="firstterm">publications</em> of the project. Let's look at these two pieces in more detail:
-</p><p>Most projects are not completely self-contained. They need files built by other projects in order to
-be compiled or tested and so on. For example, in order to use Hibernate in my project, I need to include some
-Hibernate jars in the classpath when I compile my source. To run my tests, I might also need to include some
-additional jars in the test classpath, such as a particular JDBC driver or the Ehcache jars.
+在未来的Gradle版本中将会有许多其它的方式使Gradle守护启用更快的构建。
+</p></div></div></div><div class="chapter"><div class="titlepage"><div><div><h1><a name="artifact_dependencies_tutorial"></a>第7章.&nbsp;依赖管理基本</h1></div></div></div><p>
+这个章节介绍一些Gradel的依赖管理基础。
+</p><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:what_is_dependency_management" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:what_is_dependency_management"></a>7.1.&nbsp;什么是依赖管理？</h2></div></div></div><p>
+粗略地说，依赖管理是由两部分构成的。第一，Gradle需要知道你的项目构建运行所需要的东西，
+为了找到他们。我们将这些叫做即将到来的文件-项目的<em class="firstterm">依赖</em>。
+第二，Gradle需要构建并且上传项目生成的产物。我们将这个叫做外出的文件-项目的<em class="firstterm">出版物</em>。 
+让我们更加深入了解一下这两个部分：
+</p><p>大多数的项目都不是完全独立的。他们需要别的项目构建的文件来编译或者测试等。
+比如说，为了在项目中使用Hibernate，我需要在我编译我的代码的时候添加一些Hibernate jar包到classpath。
+运行我的测试时，我也需要添加一些附加的jars包到测试classpath，比如特别JDBC驱动或者Ehcache jars包。
 </p><p>
-These incoming files form the dependencies of the project.
-Gradle allows you to tell it what the dependencies of your project are, so that it can take care of
-finding these dependencies, and making them available in your build.
-The dependencies might need to be downloaded from a remote Maven or Ivy repository, or located in a local directory, or
-may need to be built by another project in the same multi-project build.
-We call this process <em class="firstterm">dependency resolution</em>.
+这些来自于项目依赖的即将到来的文件。Gradle允许你描述你的项目所需要的依赖，
+这样的话它就能考虑查找这些依赖项，并且使他们能够被你的项目所用。
+这些依赖或许需要从远程Maven或者Ivy仓库中下载，或者位于本地目录，
+或者是多项目构建中的别的项目中。
+我们叫这个进程<em class="firstterm">依赖解决</em>。
 </p><p>
-Note that this feature provides a major advantage over Ant. With Ant, you only have the ability to
-specify absolute or relative paths to specific jars to load. With Gradle, you simply declare the “names”
-of your dependencies, and other layers determine where to get those dependencies from. You can get
-similar behavior from Ant by adding Apache Ivy, but Gradle does it better.
+注意这个特点提供了相对于Ant的一个主要的有点。用Ant，你只能指定相对的或者相关路径来指定加载的jars包。
+用Gradle，你只要简单地生命一下你的依赖的名字，并且别的层决定了哪里能够获得这些依赖。
+你可以从Ant通过添加Apache Ivy来获得相似的需求，但是Gradle可以做得更好。
 </p><p>
 Often, the dependencies of a project will themselves have dependencies. For example, Hibernate core requires
 several other libraries to be present on the classpath with it runs. So, when Gradle runs the tests for your
