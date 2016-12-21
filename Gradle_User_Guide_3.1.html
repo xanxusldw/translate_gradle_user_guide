@@ -642,22 +642,20 @@ HotSpot的使用经验告诉我们需要5到10个构建使优化变稳定。
 用Gradle，你只要简单地生命一下你的依赖的名字，并且别的层决定了哪里能够获得这些依赖。
 你可以从Ant通过添加Apache Ivy来获得相似的需求，但是Gradle可以做得更好。
 </p><p>
-Often, the dependencies of a project will themselves have dependencies. For example, Hibernate core requires
-several other libraries to be present on the classpath with it runs. So, when Gradle runs the tests for your
-project, it also needs to find these dependencies and make them available. We call these <em class="firstterm">transitive dependencies</em>.
+项目的依赖项常常也是有他自己的依赖项。比如说，Hibernate Core运行的时候需要一些其它的库放到classpath中。
+所以当Gradle运行项目的测试时，它也需要找到这些依赖项并且使他们可用。
+我们叫<em class="firstterm">间接地依赖项</em>。
 </p><p>
-The main purpose of most projects is to build some files that are to be used outside the project.
-For example, if your project produces a Java library, you need to build a jar, and maybe a source jar and
-some documentation, and publish them somewhere.
-</p><p>These outgoing files form the publications of the project. Gradle also takes care of this important work for you. You declare the
-publications of your project, and Gradle take care of building them and publishing them somewhere.
-Exactly what “publishing” means depends on what you want to do. You might want to copy the files to a local directory,
-or upload them to a remote Maven or Ivy repository. Or you might use the files in another project in the same
-multi-project build.
-We call this process <em class="firstterm">publication</em>.
-</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:declaring_your_dependencies" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:declaring_your_dependencies"></a>7.2.&nbsp;Declaring your dependencies</h2></div></div></div><p>
-Let's look at some dependency declarations. Here's a basic build script:
-</p><div class="example"><a name="basicDependencyDeclarations"></a><p class="title"><b>Example&nbsp;7.1.&nbsp;Declaring dependencies</b></p><div class="example-contents"><p><code class="filename">build.gradle</code></p><pre class="programlisting">apply plugin: <span class="hl-string">'java'</span>
+大多数项目的主要目的是构建一些在本项目外使用的文件。比如，如果你的项目生成一个Java库， 你需要构建一个Jar，
+也许是一个源jar包以及一些文档，然后在别的地方发布它们。
+</p><p>这些外部文件构成了项目的发布版本。 Gradle为你分担了这样重要的工作。
+你定义了你的项目的产物，然后Gradle考虑构建它们并在某些地方发布它们。
+准确地说发布什么意味着你想要做什么。你可以拷贝那些生成文件到本地目录，
+或者上传到Maven或者Ivy仓库。或者你可以在多项目构建中在另一个项目中用这些文件。
+我们将这个过程叫做<em class="firstterm">发布</em>.
+</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:declaring_your_dependencies" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:declaring_your_dependencies"></a>7.2.&nbsp;定义你的依赖项</h2></div></div></div><p>
+让我们查看一下一些依赖项的定义。下面就是基本构建脚本：
+</p><div class="example"><a name="basicDependencyDeclarations"></a><p class="title"><b>例子&nbsp;7.1.&nbsp;定义依赖项</b></p><div class="example-contents"><p><code class="filename">build.gradle</code></p><pre class="programlisting">apply plugin: <span class="hl-string">'java'</span>
 
 repositories {
     mavenCentral()
@@ -667,83 +665,77 @@ dependencies {
     compile group: <span class="hl-string">'org.hibernate'</span>, name: <span class="hl-string">'hibernate-core'</span>, version: <span class="hl-string">'3.6.7.Final'</span>
     testCompile group: <span class="hl-string">'junit'</span>, name: <span class="hl-string">'junit'</span>, version: <span class="hl-string">'4.+'</span>
 }
-</pre></div></div><br class="example-break"><p>What's going on here? This build script says a few things about the project.
-Firstly, it states that Hibernate core 3.6.7.Final is required
-to compile the project's production source. By implication, Hibernate core and its dependencies are also required
-at runtime.
-The build script also states that any junit &gt;= 4.0 is required to compile the project's tests.
-It also tells Gradle to look in the Maven central repository for any dependencies that are required.
-The following sections go into the details.
-</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="configurations" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#configurations"></a>7.3.&nbsp;Dependency configurations</h2></div></div></div><p>In Gradle dependencies are grouped into <em class="firstterm">configurations</em>. A configuration is simply a named set of dependencies.
-We will refer to them as <em class="firstterm">dependency configurations</em>. You can use them to declare the external dependencies of your project.
-As we will see later, they are also used to declare the publications of your project.</p><p>
-The Java plugin defines a number of standard configurations. These configurations represent the classpaths that the
-Java plugin uses. Some are listed below, and you can find more details in <a class="xref" href="https://docs.gradle.org/current/userguide/userguide_single.html#tab:configurations" title="Table 46.5. Java plugin - dependency configurations">Table&nbsp;46.5, “Java plugin - dependency configurations”</a>.
-</p><div class="variablelist"><dl><dt><span class="term">compile</span></dt><dd><p>The dependencies required to compile the production source of the project.</p></dd><dt><span class="term">runtime</span></dt><dd><p>
-The dependencies required by the production classes at runtime. By default, also includes the
-compile time dependencies.
+</pre></div></div><br class="example-break"><p>这里有什么东西呢？ 这个构建脚本描述了项目中很少的东西。
+第一，它声明Hibernate core 2.6.7.Final 是项目产物构建的源依赖。
+这也暗示了， Hibernate core和它的依赖项在运行时都是需要的。
+构建脚本还声明了任意的junit &gt;= 4.0也是需要被编译到项目测试中。
+它也告诉Gradle去maven中心仓库中查找所需要的依赖项。下面的章节将会进行仔细讨论。
+</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="configurations" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#configurations"></a>7.3.&nbsp;依赖项配置</h2></div></div></div><p>在Gradle中，依赖项是以<em class="firstterm">配置项</em>为基础的. 一个配置项就是简单的一组命名的依赖项。
+我们将会将他们看作<em class="firstterm">依赖配置项</em>.你可以用他们来定义你的项目的外部依赖项。
+正如我们后面将看到的，它们将会被用来定义你的项目的发布产物。</p><p>
+Java 插件定义了一些标准配置项。这些配置项代表了Java插件所用的classpaths。
+一些配置参数已经列在下面，你可以在<a class="xref" href="https://docs.gradle.org/current/userguide/userguide_single.html#tab:configurations" title="Table 46.5. Java plugin - dependency configurations">Table&nbsp;46.5, “Java plugin - dependency configurations”</a>找到更多的细节。
+</p><div class="variablelist"><dl><dt><span class="term">compile</span></dt><dd><p>编译项目产物源所需要的依赖项。</p></dd><dt><span class="term">runtime</span></dt><dd><p>
+产物类运行时所需要的依赖项。默认，也包括编译时依赖项。
 </p></dd><dt><span class="term">testCompile</span></dt><dd><p>
-The dependencies required to compile the test source of the project. By default, also includes
-the compiled production classes and the compile time dependencies.
+编译项目测试源所需要的依赖项。默认，也包括编译产物类和编译时依赖项。
 </p></dd><dt><span class="term">testRuntime</span></dt><dd><p>
-The dependencies required to run the tests. By default, also includes the compile, runtime and test compile
-dependencies.
+运行测试所需要的依赖项。默认也包括编译，运行时和测试编译依赖项。
 </p></dd></dl></div><p>
-Various plugins add further standard configurations. You can also define your own custom configurations to use in your
-build. Please see <a class="xref" href="https://docs.gradle.org/current/userguide/userguide_single.html#sub:configurations">Section&nbsp;24.3, “Dependency configurations”</a> for the details of defining and customizing dependency configurations.
-</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:external_dependencies_tutorial" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:external_dependencies_tutorial"></a>7.4.&nbsp;External dependencies</h2></div></div></div><p>There are various types of dependencies that you can declare. One such type is an <em class="firstterm">external dependency</em>.
-This is a dependency on some files built outside the current build, and stored in a repository of some kind, such as Maven central, or
-a corporate Maven or Ivy repository, or a directory in the local file system.
+多样化的插件添加了更进一步的标准配置。你也可以定义你自己自定义的配置项到你的构建中。
+请查看<a class="xref" href="https://docs.gradle.org/current/userguide/userguide_single.html#sub:configurations">章节&nbsp;24.3, “依赖配置项”</a>获取更多的关于定义和自定义依赖配置项的细节。
+</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:external_dependencies_tutorial" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:external_dependencies_tutorial"></a>7.4.&nbsp;外部依赖项</h2></div></div></div><p>你可以定义多种类型的依赖项。一种这样的类型就是一个<em class="firstterm">外部依赖项</em>。
+这是一个在当前构建外构建的一些文件的依赖，并以某种类型存储在仓库中，比如maven仓库中心，
+或者一个共同的maven仓库亦或者是Ivy仓库，或者是本地文件系统的目录。
 </p><p>
-To define an external dependency, you add it to a dependency configuration:
-</p><div class="example"><a name="externalDependencies"></a><p class="title"><b>Example&nbsp;7.2.&nbsp;Definition of an external dependency</b></p><div class="example-contents"><p><code class="filename">build.gradle</code></p><pre class="programlisting">dependencies {
+为了定义一个外部依赖项，你需要添加它到依赖项配置中：
+</p><div class="example"><a name="externalDependencies"></a><p class="title"><b>例子&nbsp;7.2.&nbsp;外部依赖项的定义</b></p><div class="example-contents"><p><code class="filename">build.gradle</code></p><pre class="programlisting">dependencies {
     compile group: <span class="hl-string">'org.hibernate'</span>, name: <span class="hl-string">'hibernate-core'</span>, version: <span class="hl-string">'3.6.7.Final'</span>
 }
 </pre></div></div><br class="example-break"><p>
-An external dependency is identified using <code class="literal">group</code>, <code class="literal">name</code> and <code class="literal">version</code> attributes.
-Depending on which kind of repository you are using, <code class="literal">group</code> and <code class="literal">version</code> may be optional.
-</p><p>The shortcut form for declaring external dependencies looks like “<code class="literal"><em class="replaceable"><code>group</code></em>:<em class="replaceable"><code>name</code></em>:<em class="replaceable"><code>version</code></em></code>”.
-</p><div class="example"><a name="externalDependencies"></a><p class="title"><b>Example&nbsp;7.3.&nbsp;Shortcut definition of an external dependency</b></p><div class="example-contents"><p><code class="filename">build.gradle</code></p><pre class="programlisting">dependencies {
+一个外部依赖项是通过<code class="literal">group</code>, <code class="literal">name</code> 和 <code class="literal">version</code> 属性识别的。
+取决于你使用的是何种类型的仓库，<code class="literal">group</code> 和 <code class="literal">version</code>是可选择的。
+</p><p>定义外部依赖项的快捷形式有点像“<code class="literal"><em class="replaceable"><code>group</code></em>:<em class="replaceable"><code>name</code></em>:<em class="replaceable"><code>version</code></em></code>”。
+</p><div class="example"><a name="externalDependencies"></a><p class="title"><b>例子&nbsp;7.3.&nbsp;外部依赖项的快捷定义</b></p><div class="example-contents"><p><code class="filename">build.gradle</code></p><pre class="programlisting">dependencies {
     compile <span class="hl-string">'org.hibernate:hibernate-core:3.6.7.Final'</span>
 }
-</pre></div></div><br class="example-break"><p>To find out more about defining and working with dependencies, have a look at <a class="xref" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:how_to_declare_your_dependencies">Section&nbsp;24.4, “How to declare your dependencies”</a>.</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:repositories_tutorial" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:repositories_tutorial"></a>7.5.&nbsp;Repositories</h2></div></div></div><p>
-How does Gradle find the files for external dependencies? Gradle looks for them in a <em class="firstterm">repository</em>.
-A repository is really just a collection of files, organized by <code class="literal">group</code>, <code class="literal">name</code> and
-<code class="literal">version</code>. Gradle understands several different repository formats, such as Maven and Ivy, and several
-different ways of accessing the repository, such as using the local file system or HTTP.
-</p><p>By default, Gradle does not define any repositories. You need to define at least one before you can use external dependencies.
-One option is use the Maven central repository:</p><div class="example"><a name="defineMavenCentral"></a><p class="title"><b>Example&nbsp;7.4.&nbsp;Usage of Maven central repository</b></p><div class="example-contents"><p><code class="filename">build.gradle</code></p><pre class="programlisting">repositories {
+</pre></div></div><br class="example-break"><p>想要获取更多的定义和处理依赖项的方法，去查看<a class="xref" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:how_to_declare_your_dependencies">章节&nbsp;24.4, “如何定义你的依赖项”</a>.</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:repositories_tutorial" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:repositories_tutorial"></a>7.5.&nbsp;仓库</h2></div></div></div><p>
+Gradle是如何找到外部依赖项的文件的？Gradle是在<em class="firstterm">仓库</em>中找到它们的。
+仓库实际上就是一个文件的集合，通过<code class="literal">group</code>, <code class="literal">name</code> 和
+<code class="literal">version</code>组织的。Gradle知道一些不同的仓库格式，如Maven和Ivy，还有一些不同的访问仓库方式，比如使用本地文件系统或者HTTP。
+</p><p>默认情况下，Gradle并不会定义任意的仓库。你需要在使用一个外部依赖项之前定义至少一个。
+一个选项就是使用Maven中心仓库：</p><div class="example"><a name="defineMavenCentral"></a><p class="title"><b>例子&nbsp;7.4.&nbsp;Maven中心仓库的使用</b></p><div class="example-contents"><p><code class="filename">build.gradle</code></p><pre class="programlisting">repositories {
     mavenCentral()
 }
-</pre></div></div><br class="example-break"><p>Or Bintray's JCenter:</p><div class="example"><a name="defineJCenter"></a><p class="title"><b>Example&nbsp;7.5.&nbsp;Usage of JCenter repository</b></p><div class="example-contents"><p><code class="filename">build.gradle</code></p><pre class="programlisting">repositories {
+</pre></div></div><br class="example-break"><p>或者Bintry的JCenter：</p><div class="example"><a name="defineJCenter"></a><p class="title"><b>例子&nbsp;7.5.&nbsp;JCenter仓库的使用</b></p><div class="example-contents"><p><code class="filename">build.gradle</code></p><pre class="programlisting">repositories {
     jcenter()
 }
-</pre></div></div><br class="example-break"><p>Or a any other remote Maven repository:</p><div class="example"><a name="defineRemoteMavenRepo"></a><p class="title"><b>Example&nbsp;7.6.&nbsp;Usage of a remote Maven repository</b></p><div class="example-contents"><p><code class="filename">build.gradle</code></p><pre class="programlisting">repositories {
+</pre></div></div><br class="example-break"><p>或者任意远程Maven仓库：</p><div class="example"><a name="defineRemoteMavenRepo"></a><p class="title"><b>例子&nbsp;7.6.&nbsp;远程Maven仓库的使用</b></p><div class="example-contents"><p><code class="filename">build.gradle</code></p><pre class="programlisting">repositories {
     maven {
         url <span class="hl-string">"http://repo.mycompany.com/maven2"</span>
     }
 }
-</pre></div></div><br class="example-break"><p>Or a remote Ivy repository:</p><div class="example"><a name="defineRemoteIvyRepo"></a><p class="title"><b>Example&nbsp;7.7.&nbsp;Usage of a remote Ivy directory</b></p><div class="example-contents"><p><code class="filename">build.gradle</code></p><pre class="programlisting">repositories {
+</pre></div></div><br class="example-break"><p>或者一个远程Ivy仓库：</p><div class="example"><a name="defineRemoteIvyRepo"></a><p class="title"><b>例子&nbsp;7.7.&nbsp;远程Ivy目录使用</b></p><div class="example-contents"><p><code class="filename">build.gradle</code></p><pre class="programlisting">repositories {
     ivy {
         url <span class="hl-string">"http://repo.mycompany.com/repo"</span>
     }
 }
-</pre></div></div><br class="example-break"><p>You can also have repositories on the local file system. This works for both Maven and Ivy repositories.</p><div class="example"><a name="defineRemoteIvyRepo"></a><p class="title"><b>Example&nbsp;7.8.&nbsp;Usage of a local Ivy directory</b></p><div class="example-contents"><p><code class="filename">build.gradle</code></p><pre class="programlisting">repositories {
+</pre></div></div><br class="example-break"><p>你还可以在本地文件系统中使用仓库。可以使用Maven和Ivy这两种仓库。</p><div class="example"><a name="defineRemoteIvyRepo"></a><p class="title"><b>例子&nbsp;7.8.&nbsp;本地Ivy目录使用</b></p><div class="example-contents"><p><code class="filename">build.gradle</code></p><pre class="programlisting">repositories {
     ivy {
         <span class="hl-comment">// URL can refer to a local directory</span>
         url <span class="hl-string">"../local-repo"</span>
     }
 }
-</pre></div></div><br class="example-break"><p>A project can have multiple repositories. Gradle will look for a dependency in each repository in the order they are specified, stopping
-at the first repository that contains the requested module.
-</p><p>To find out more about defining and working with repositories, have a look at <a class="xref" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:repositories">Section&nbsp;24.6, “Repositories”</a>.</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:publishing_artifacts_tutorial" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:publishing_artifacts_tutorial"></a>7.6.&nbsp;Publishing artifacts</h2></div></div></div><p>
-Dependency configurations are also used to publish files.<sup>[<a href="https://docs.gradle.org/current/userguide/userguide_single.html#ftn.N106E2" name="N106E2" class="footnote">2</a>]</sup>
-We call these files <em class="firstterm">publication artifacts</em>, or usually just <em class="firstterm">artifacts</em>.
+</pre></div></div><br class="example-break"><p>一个项目可以游多个仓库。Gradle将会按照指定的顺序在每个仓库中查找依赖项，
+在第一个仓库找到需求的模块就停止查找。
+</p><p>想找到更多关于定义依赖项和依赖项工作方式，可以查阅<a class="xref" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:repositories">章节&nbsp;24.6, 仓库</a>。</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:publishing_artifacts_tutorial" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:publishing_artifacts_tutorial"></a>7.6.&nbsp;发布的构件</h2></div></div></div><p>
+依赖配置项同样被用到发布到文件中。<sup>[<a href="https://docs.gradle.org/current/userguide/userguide_single.html#ftn.N106E2" name="N106E2" class="footnote">2</a>]</sup>
+我们将这些文件叫做<em class="firstterm">发布的构件</em>, 或者直接使用<em class="firstterm">构件(artifacts)</em>.
 </p><p>
-The plugins do a pretty good job of defining the artifacts of a project, so you usually don't need to do anything special to tell Gradle
-what needs to be published. However, you do need to tell Gradle where to publish the artifacts. You do this by attaching repositories
-to the <code class="literal">uploadArchives</code> task. Here's an example of publishing to a remote Ivy repository:
-</p><div class="example"><a name="publishIvyRepository"></a><p class="title"><b>Example&nbsp;7.9.&nbsp;Publishing to an Ivy repository</b></p><div class="example-contents"><p><code class="filename">build.gradle</code></p><pre class="programlisting">uploadArchives {
+插件为项目构建的定义做了很好的事情，所以你没必要特别的事情告诉Gradle需要发布什么。
+然而，你需要告诉Gradle在哪里发布构件。你可以通过在仓库中添加
+<code class="literal">uploadArchives</code> 任务来指定地方.这里就有一个发布到远程Ivy仓库的例子：
+</p><div class="example"><a name="publishIvyRepository"></a><p class="title"><b>例子&nbsp;7.9.&nbsp;发布到Ivy仓库</b></p><div class="example-contents"><p><code class="filename">build.gradle</code></p><pre class="programlisting">uploadArchives {
     repositories {
         ivy {
             credentials {
@@ -755,13 +747,12 @@ to the <code class="literal">uploadArchives</code> task. Here's an example of pu
     }
 }
 </pre></div></div><br class="example-break"><p>
-Now, when you run <strong class="userinput"><code>gradle uploadArchives</code></strong>, Gradle will build and upload your Jar.
-Gradle will also generate and upload an <code class="filename">ivy.xml</code> as well.
+现在，当你运行<strong class="userinput"><code>gradle uploadArchives</code></strong>, Gradle将会构建并上传你的Jar包。
+Gradle也会生成并上传<code class="filename">ivy.xml</code>。
 </p><p>
-You can also publish to Maven repositories. The syntax is slightly different.<sup>[<a href="https://docs.gradle.org/current/userguide/userguide_single.html#ftn.N10705" name="N10705" class="footnote">3</a>]</sup>
-Note that you also need to apply the Maven plugin in order to publish to a Maven repository. when this is in place, Gradle
-will generate and upload a <code class="filename">pom.xml</code>.
-</p><div class="example"><a name="publishMavenRepository"></a><p class="title"><b>Example&nbsp;7.10.&nbsp;Publishing to a Maven repository</b></p><div class="example-contents"><p><code class="filename">build.gradle</code></p><pre class="programlisting">apply plugin: <span class="hl-string">'maven'</span>
+你也可以发布到Maven仓库。语法会有一点点不同。<sup>[<a href="https://docs.gradle.org/current/userguide/userguide_single.html#ftn.N10705" name="N10705" class="footnote">3</a>]</sup>
+注意为了发布到Maven仓库你也需要适用Maven插件。 在恰当的时候Gradle将会生成并且上传<code class="filename">pom.xml</code>。
+</p><div class="example"><a name="publishMavenRepository"></a><p class="title"><b>例子&nbsp;7.10.&nbsp;Publishing to a Maven repository</b></p><div class="example-contents"><p><code class="filename">build.gradle</code></p><pre class="programlisting">apply plugin: <span class="hl-string">'maven'</span>
 
 uploadArchives {
     repositories {
@@ -770,12 +761,12 @@ uploadArchives {
         }
     }
 }
-</pre></div></div><br class="example-break"><p>To find out more about publication, have a look at <a class="xref" href="https://docs.gradle.org/current/userguide/userguide_single.html#artifact_management">Chapter&nbsp;31, <i>Publishing artifacts</i></a>.</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:artifacts_tutorial_where_to_next" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:artifacts_tutorial_where_to_next"></a>7.7.&nbsp;Where to next?</h2></div></div></div><p>
-For all the details of dependency resolution, see <a class="xref" href="https://docs.gradle.org/current/userguide/userguide_single.html#dependency_management">Chapter&nbsp;24, <i>Dependency Management</i></a>, and for artifact publication see <a class="xref" href="https://docs.gradle.org/current/userguide/userguide_single.html#artifact_management">Chapter&nbsp;31, <i>Publishing artifacts</i></a>.
+</pre></div></div><br class="example-break"><p>想获取更多的关于发布的细节，请查阅 <a class="xref" href="https://docs.gradle.org/current/userguide/userguide_single.html#artifact_management">章节&nbsp;31, <i>发布构件</i></a>.</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:artifacts_tutorial_where_to_next" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:artifacts_tutorial_where_to_next"></a>7.7.&nbsp;下一步是什么？</h2></div></div></div><p>
+为了得到所有的依赖解决方法的细节，查看<a class="xref" href="https://docs.gradle.org/current/userguide/userguide_single.html#dependency_management">章节&nbsp;24, <i>依赖管理</i></a>,关于构件发布查看 <a class="xref" href="https://docs.gradle.org/current/userguide/userguide_single.html#artifact_management">章节&nbsp;31, <i>发布构件</i></a>.
 </p><p>
-If you are interested in the DSL elements mentioned here, have a look at <a class="ulink" href="https://docs.gradle.org/current/dsl/org.gradle.api.Project.html#org.gradle.api.Project:configurations(groovy.lang.Closure)" target="_top"><code class="classname">Project.configurations{}</code></a>,
-<a class="ulink" href="https://docs.gradle.org/current/dsl/org.gradle.api.Project.html#org.gradle.api.Project:repositories(groovy.lang.Closure)" target="_top"><code class="classname">Project.repositories{}</code></a> and <a class="ulink" href="https://docs.gradle.org/current/dsl/org.gradle.api.Project.html#org.gradle.api.Project:dependencies(groovy.lang.Closure)" target="_top"><code class="classname">Project.dependencies{}</code></a>.
-</p><p>Otherwise, continue on to some of the other <a class="link" href="https://docs.gradle.org/current/userguide/userguide_single.html#">tutorials</a>.</p></div><div class="footnotes"><br><hr align="left" width="100"><div class="footnote"><p><sup>[<a href="https://docs.gradle.org/current/userguide/userguide_single.html#N106E2" name="ftn.N106E2" class="para">2</a>] </sup>We think this is confusing, and we are gradually teasing apart the two concepts in the Gradle DSL.</p></div><div class="footnote"><p><sup>[<a href="https://docs.gradle.org/current/userguide/userguide_single.html#N10705" name="ftn.N10705" class="para">3</a>] </sup>We are working to make the syntax consistent for resolving from and publishing to Maven repositories.</p></div></div></div><div class="chapter"><div class="titlepage"><div><div><h1><a name="intro_multi_project_builds"></a>Chapter&nbsp;8.&nbsp;Introduction to multi-project builds</h1></div></div></div><p>Only the smallest of projects has a single build file and source tree, unless it happens to be a massive,
+如果你对这里提及的DSL元素感兴趣，查阅<a class="ulink" href="https://docs.gradle.org/current/dsl/org.gradle.api.Project.html#org.gradle.api.Project:configurations(groovy.lang.Closure)" target="_top"><code class="classname">Project.configurations{}</code></a>,
+<a class="ulink" href="https://docs.gradle.org/current/dsl/org.gradle.api.Project.html#org.gradle.api.Project:repositories(groovy.lang.Closure)" target="_top"><code class="classname">Project.repositories{}</code></a> 和 <a class="ulink" href="https://docs.gradle.org/current/dsl/org.gradle.api.Project.html#org.gradle.api.Project:dependencies(groovy.lang.Closure)" target="_top"><code class="classname">Project.dependencies{}</code></a>.
+</p><p>另外，继续阅读别的章节<a class="link" href="https://docs.gradle.org/current/userguide/userguide_single.html#">指南</a>.</p></div><div class="footnotes"><br><hr align="left" width="100"><div class="footnote"><p><sup>[<a href="https://docs.gradle.org/current/userguide/userguide_single.html#N106E2" name="ftn.N106E2" class="para">2</a>] </sup>我们认为这很让人困惑，我们将会在Gradle DSL中慢慢梳理这两个概念。</p></div><div class="footnote"><p><sup>[<a href="https://docs.gradle.org/current/userguide/userguide_single.html#N10705" name="ftn.N10705" class="para">3</a>] </sup>我们致力于使Maven仓库获取和发布的语法连续性更强。</p></div></div></div><div class="chapter"><div class="titlepage"><div><div><h1><a name="intro_multi_project_builds"></a>Chapter&nbsp;8.&nbsp;Introduction to multi-project builds</h1></div></div></div><p>Only the smallest of projects has a single build file and source tree, unless it happens to be a massive,
 monolithic application. It’s often much easier to digest and understand a project that has been split into
 smaller, inter-dependent modules. The word “inter-dependent” is important, though, and is why you typically
 want to link the modules together through a single build.</p><p>Gradle supports this scenario through <em class="firstterm">multi-project</em> builds.</p><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:structure_of_a_multiproject_build" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:structure_of_a_multiproject_build"></a>8.1.&nbsp;Structure of a multi-project build</h2></div></div></div><p>Such builds come in all shapes and sizes, but they do have some common characteristics:
