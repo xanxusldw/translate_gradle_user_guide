@@ -766,19 +766,19 @@ uploadArchives {
 </p><p>
 如果你对这里提及的DSL元素感兴趣，查阅<a class="ulink" href="https://docs.gradle.org/current/dsl/org.gradle.api.Project.html#org.gradle.api.Project:configurations(groovy.lang.Closure)" target="_top"><code class="classname">Project.configurations{}</code></a>,
 <a class="ulink" href="https://docs.gradle.org/current/dsl/org.gradle.api.Project.html#org.gradle.api.Project:repositories(groovy.lang.Closure)" target="_top"><code class="classname">Project.repositories{}</code></a> 和 <a class="ulink" href="https://docs.gradle.org/current/dsl/org.gradle.api.Project.html#org.gradle.api.Project:dependencies(groovy.lang.Closure)" target="_top"><code class="classname">Project.dependencies{}</code></a>.
-</p><p>另外，继续阅读别的章节<a class="link" href="https://docs.gradle.org/current/userguide/userguide_single.html#">指南</a>.</p></div><div class="footnotes"><br><hr align="left" width="100"><div class="footnote"><p><sup>[<a href="https://docs.gradle.org/current/userguide/userguide_single.html#N106E2" name="ftn.N106E2" class="para">2</a>] </sup>我们认为这很让人困惑，我们将会在Gradle DSL中慢慢梳理这两个概念。</p></div><div class="footnote"><p><sup>[<a href="https://docs.gradle.org/current/userguide/userguide_single.html#N10705" name="ftn.N10705" class="para">3</a>] </sup>我们致力于使Maven仓库获取和发布的语法连续性更强。</p></div></div></div><div class="chapter"><div class="titlepage"><div><div><h1><a name="intro_multi_project_builds"></a>Chapter&nbsp;8.&nbsp;Introduction to multi-project builds</h1></div></div></div><p>Only the smallest of projects has a single build file and source tree, unless it happens to be a massive,
-monolithic application. It’s often much easier to digest and understand a project that has been split into
-smaller, inter-dependent modules. The word “inter-dependent” is important, though, and is why you typically
-want to link the modules together through a single build.</p><p>Gradle supports this scenario through <em class="firstterm">multi-project</em> builds.</p><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:structure_of_a_multiproject_build" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:structure_of_a_multiproject_build"></a>8.1.&nbsp;Structure of a multi-project build</h2></div></div></div><p>Such builds come in all shapes and sizes, but they do have some common characteristics:
-</p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p>A <code class="filename">settings.gradle</code> file in the root or <code class="literal">master</code>
-directory of the project</p></li><li class="listitem"><p>A <code class="filename">build.gradle</code> file in the root or <code class="literal">master</code>
-directory</p></li><li class="listitem"><p>Child directories that have their own <code class="filename">*.gradle</code> build files
-(some multi-project builds may omit child project build scripts)</p></li></ul></div><p>
-</p><p>The <code class="filename">settings.gradle</code> file tells Gradle how the project and subprojects are
-structured. Fortunately, you don’t have to read this file simply to learn what the project structure
-is as you can run the command <strong class="userinput"><code>gradle projects</code></strong>. Here's the output from using
-that command on the Java <span class="emphasis"><em>multiproject</em></span> build in the Gradle samples:
-</p><div class="example"><a name="listProjects"></a><p class="title"><b>Example&nbsp;8.1.&nbsp;Listing the projects in a build</b></p><div class="example-contents"><p>Output of <strong class="userinput"><code>gradle -q projects</code></strong></p><pre class="screen">&gt; gradle -q projects
+</p><p>另外，继续阅读别的章节<a class="link" href="https://docs.gradle.org/current/userguide/userguide_single.html#">指南</a>.</p></div><div class="footnotes"><br><hr align="left" width="100"><div class="footnote"><p><sup>[<a href="https://docs.gradle.org/current/userguide/userguide_single.html#N106E2" name="ftn.N106E2" class="para">2</a>] </sup>我们认为这很让人困惑，我们将会在Gradle DSL中慢慢梳理这两个概念。</p></div><div class="footnote"><p><sup>[<a href="https://docs.gradle.org/current/userguide/userguide_single.html#N10705" name="ftn.N10705" class="para">3</a>] </sup>我们致力于使Maven仓库获取和发布的语法连续性更强。</p></div></div></div><div class="chapter"><div class="titlepage"><div><div><h1><a name="intro_multi_project_builds"></a>章节&nbsp;8.&nbsp;多项目构建介绍</h1></div></div></div><p>
+只有犯罪小的项目才只有一个单独的构建文件和源文件树，除非它变成一个复杂，巨大的应用程序。
+将一个工程分成更小的内部独立的模块将会更容易挖掘和理解这个工程。
+这个词“内部独立”是非常重要的，这也是为什么你愿意将多个模块链接成一个单独的构建的原因。
+</p><p>Gradle是通过<em class="firstterm">多项目</em> 构建来提供这样的支持的。</p><div class="section"><div class="titlepage"><div><div><h2 class="title"><a name="sec:structure_of_a_multiproject_build" class="section-anchor" href="https://docs.gradle.org/current/userguide/userguide_single.html#sec:structure_of_a_multiproject_build"></a>8.1.&nbsp;多项目构建的结构</h2></div></div></div><p>这样的构建是以各种样式和大小出现的，但是他们也有一些共同的特点：
+</p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p>在根中有一个<code class="filename">settings.gradle</code>文件或者项目的<code class="literal">master</code>
+目录</p></li><li class="listitem"><p>在根中有一个<code class="filename">build.gradle</code>文件或者<code class="literal">master</code>
+目录</p></li><li class="listitem"><p>子目录有他们自己的<code class="filename">*.gradle</code>构建文件
+(一些多项目构建可能会省略子项目的构建脚本)</p></li></ul></div><p>
+</p><p><code class="filename">settings.gradle</code>文件告诉Gradle项目和子项目是如何组织的。
+幸运的是，你没有必要去粗略读一遍这个文件来了解工程的结构，因为你可以运行
+<strong class="userinput"><code>gradle projects</code></strong>。下面是在Java<span class="emphasis"><em>多项目</em></span> 构建运用上面的命令的例子:
+</p><div class="example"><a name="listProjects"></a><p class="title"><b>例子&nbsp;8.1.&nbsp;列出构建的项目</b></p><div class="example-contents"><p>运行<strong class="userinput"><code>gradle -q projects</code></strong>的输出</p><pre class="screen">&gt; gradle -q projects
 
 ------------------------------------------------------------
 Root project
@@ -794,23 +794,20 @@ Root project 'multiproject'
 To see a list of the tasks of a project, run gradle &lt;project-path&gt;:tasks
 For example, try running gradle :api:tasks
 </pre></div></div><p><br class="example-break">
-</p><p>This tells you that <span class="emphasis"><em>multiproject</em></span> has three immediate child projects:
-<span class="emphasis"><em>api</em></span>, <span class="emphasis"><em>services</em></span> and <span class="emphasis"><em>shared</em></span>. The
-<span class="emphasis"><em>services</em></span> project then has its own children, <span class="emphasis"><em>shared</em></span> and
-<span class="emphasis"><em>webservice</em></span>. These map to the directory structure, so it’s easy to find them.
-For example, you can find <span class="emphasis"><em>webservice</em></span> in
-<code class="filename">&lt;root&gt;/services/webservice</code>.</p><p>
-By default, Gradle uses the name of the directory it finds the <code class="filename">settings.gradle</code> as the name of the root project.
-This usually doesn't cause problems since all developers check out the same directory name when working on a project.
-On Continuous Integration servers, like Jenkins, the directory name may be auto-generated and not match the name in your VCS.
-For that reason, it's recommended that you always set the root project name to something predictable, even in single project builds.
-You can configure the root project name by setting <code class="literal">rootProject.name</code>.
-</p><p>Each project will usually have its own build file, but that's not necessarily the case. In the above
-example, the <span class="emphasis"><em>services</em></span> project is just a container or grouping of other subprojects.
-There is no build file in the corresponding directory. However, <span class="emphasis"><em>multiproject</em></span> does
-have one for the root project.</p><p>The root <code class="filename">build.gradle</code> is often used to share common configuration between the
-child projects, for example by applying the same sets of plugins and dependencies to all the child
-projects. It can also be used to configure individual subprojects when it is preferable to have
+</p><p>这告诉了你这个<span class="emphasis"><em>多项目</em></span>有三个直接的子项目：
+<span class="emphasis"><em>api</em></span>, <span class="emphasis"><em>services</em></span> 和 <span class="emphasis"><em>shared</em></span>.
+<span class="emphasis"><em>services</em></span>项目有它自己的子项目， <span class="emphasis"><em>shared</em></span> 和
+<span class="emphasis"><em>webservice</em></span>. 这对应着目录结构，因此你可以非常容易的发现他们。
+比如说，你可以很容易在
+<code class="filename">&lt;root&gt;/services/webservice</code>发现<span class="emphasis"><em>webservice</em></span>。</p><p>
+默认情况下，Gradle使用<code class="filename">settings.gradle</code>所在的目录名字作为根项目的名字。
+这通常不会出什么差错，因为所有的开发者都会在一个项目工作的时候检查相同目录的名字。
+在持续集成的服务器中，像Jenkins，目录的名字可能是自动生成的或者并不匹配你在VCS中所命名的名字。
+鉴于这样的原因，推荐你将根项目名字设成可以预测的名字，甚至是在一个独立项目构建中也一样。
+你可以通过设置<code class="literal">rootProject.name</code>来配置你的跟项目名字。
+</p><p>每一个项目通常都有他们自己的构建文件，但那并不是必须的。
+在上面的例子中，<span class="emphasis"><em>services</em></span>项目只是一个容器或者是别的项目的组合。
+在它的相关目录中并没有任何构建文件。 然而，<span class="emphasis"><em>多项目</em></span>为根目录是有设置一个构建文件的。</p><p>根中的<code class="filename">build.gradle</code>经常被用来共享多个子项目间的共同配置。 It can also be used to configure individual subprojects when it is preferable to have
 all the configuration in one place. This means you should always check the root build file when
 discovering how a particular subproject is being configured.</p><p>Another thing to bear in mind is that the build files might not be called
 <code class="filename">build.gradle</code>. Many projects will name the build files after the subproject names,
