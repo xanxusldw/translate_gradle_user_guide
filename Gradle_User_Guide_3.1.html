@@ -807,12 +807,11 @@ For example, try running gradle :api:tasks
 你可以通过设置<code class="literal">rootProject.name</code>来配置你的跟项目名字。
 </p><p>每一个项目通常都有他们自己的构建文件，但那并不是必须的。
 在上面的例子中，<span class="emphasis"><em>services</em></span>项目只是一个容器或者是别的项目的组合。
-在它的相关目录中并没有任何构建文件。 然而，<span class="emphasis"><em>多项目</em></span>为根目录是有设置一个构建文件的。</p><p>根中的<code class="filename">build.gradle</code>经常被用来共享多个子项目间的共同配置。 It can also be used to configure individual subprojects when it is preferable to have
-all the configuration in one place. This means you should always check the root build file when
-discovering how a particular subproject is being configured.</p><p>Another thing to bear in mind is that the build files might not be called
-<code class="filename">build.gradle</code>. Many projects will name the build files after the subproject names,
-such as <code class="filename">api.gradle</code> and <code class="filename">services.gradle</code> from the previous
-example. Such an approach helps a lot in IDEs because it’s tough to work out which
+在它的相关目录中并没有任何构建文件。 然而，<span class="emphasis"><em>多项目</em></span>为根目录是有设置一个构建文件的。</p><p>根中的<code class="filename">build.gradle</code>经常被用来共享多个子项目间的共同配置。 
+它也能够被用来配置单独的子项目当将所有的配置都放到同一个地方是更好时。
+这也意味着当你要查找是否有有子项目的配置被修改时你得总是去检查根构建文件。</p><p>另一件必须记住得事情就是构建文件并不一定叫做
+<code class="filename">build.gradle</code>。许多项目会在子项目命名后再次命名构建文件，
+比如前面例子的<code class="filename">api.gradle</code> 和 <code class="filename">services.gradle</code> 。 Such an approach helps a lot in IDEs because it’s tough to work out which
 <code class="filename">build.gradle</code> file out of twenty possibilities is the one you want to open. This
 little piece of magic is handled by the <code class="filename">settings.gradle</code> file, but as a build user
 you don’t need to know the details of how it’s done. Just have a look through the child project
